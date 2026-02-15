@@ -190,14 +190,15 @@ window.addEventListener('resize', () => {
 
 let smoothZoom = 0.01;
 const zoomSpeed = 2.0;
+
 function UpdateCameraFrustum(dt) {
+
     const aspect = window.innerWidth / window.innerHeight;
     smoothZoom = lerp(smoothZoom, zoom, dt * zoomSpeed);
-    const frustumSize = 10 / smoothZoom;
-    camera.left = frustumSize * aspect / -2;
-    camera.right = frustumSize * aspect / 2;
-    camera.top = frustumSize / 2;
-    camera.bottom = frustumSize / -2;
+    const FoV = 45 / smoothZoom;
+    // camera.fov = FoV;
+    camera.position.y = 10 / smoothZoom;
+    camera.aspect = aspect;
     camera.updateProjectionMatrix();
 }
 
