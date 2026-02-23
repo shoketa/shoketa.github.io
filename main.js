@@ -14,16 +14,23 @@ const Base_VS = `
 
 varying vec3 v_Normal;
 varying vec3 v_Position;
+varying vec2 v_UV;
+varying mat4 v_ModelViewMatrix;
+varying mat4 v_ProjectionMatrix;
+
 uniform float time;
 void main() {
     gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
     gl_Position.x += sin(time + position.z*2.0) * .015;
     v_Normal = normal;
     v_Position = position;
+    v_UV = vec2(uv.x, 1.0-uv.y);
+    v_ModelViewMatrix = modelViewMatrix;
+    v_ProjectionMatrix = projectionMatrix;
 }
 
 `;
-const Base_PS = `
+const Text_PS = `
 
 vec3 hsv2rgb(vec3 c) {
   vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
@@ -34,13 +41,80 @@ vec3 hsv2rgb(vec3 c) {
 
 varying vec3 v_Normal;
 varying vec3 v_Position;
+varying vec2 v_UV;
+varying mat4 v_ModelViewMatrix;
+varying mat4 v_ProjectionMatrix;
 uniform float time;
 
 void main() {
-    float ndl = clamp(dot(vec3(0.0, 0.0, 1.0), normalize(v_Normal)) * 0.5 + 0.5, 0.0, 1.);
+    vec3 lightDir = normalize(vec3(-1.0, .8, -1.5));
+    lightDir = (v_ProjectionMatrix * v_ModelViewMatrix * vec4(lightDir, 0.0)).xyz;
+
+    float ndl = dot(lightDir, normalize(v_Normal)) * 0.5 + 0.5;
+
     gl_FragColor = vec4(hsv2rgb(vec3(fract((v_Position.x * .5) + time * 0.1), 0.8, .5)) * ndl, 1.0);
+    // gl_FragColor = vec4(vec3(ndl), 1.0);
 }
 `;
+
+const Table_PS = `
+
+vec3 hsv2rgb(vec3 c) {
+  vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
+  vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
+  return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
+}
+
+
+varying vec3 v_Normal;
+varying vec3 v_Position;
+varying vec2 v_UV;
+varying mat4 v_ModelViewMatrix;
+varying mat4 v_ProjectionMatrix;
+uniform float time;
+
+void main() {
+    vec3 lightDir = normalize(vec3(-1.0, .8, -1.5));
+    lightDir = (v_ProjectionMatrix * v_ModelViewMatrix * vec4(lightDir, 0.0)).xyz;
+
+    float ndl = dot(lightDir, normalize(v_Normal)) * 0.5 + 0.5;
+
+    // gl_FragColor = vec4(hsv2rgb(vec3(fract((v_Position.x * .5) + time * 0.1), 0.8, .5)) * ndl, 1.0);
+    gl_FragColor = vec4(vec3(ndl) * 0.1, 1.0);
+}
+`;
+
+const Char_PS = `
+uniform float time;
+
+varying vec3 v_Normal;
+varying vec3 v_Position;
+varying vec2 v_UV;
+varying mat4 v_ModelViewMatrix;
+varying mat4 v_ProjectionMatrix;
+
+uniform sampler2D diffuseTex;
+
+void main()
+{
+    vec3 lightDir = normalize(vec3(-1.0, .8, -1.5));
+    lightDir = (v_ProjectionMatrix * v_ModelViewMatrix * vec4(lightDir, 0.0)).xyz;
+
+    float ndl = dot(lightDir, normalize(v_Normal)) * 0.5 + 0.5;
+    ndl = clamp(smoothstep(0.5, 0.55, ndl) + 0.5, 0.0, 1.0);
+
+
+    vec3 viewDir = (v_ProjectionMatrix * v_ModelViewMatrix * vec4(normalize(vec3(0.0, 0.0, 1.0)), 0.0)).xyz; 
+    float ndvl = dot(normalize(viewDir + lightDir*2.0), normalize(v_Normal));
+    ndvl = clamp(smoothstep(0.8, 0.8, ndvl), 0.0, 1.0) * .1 * ndl;
+    float ndv = clamp(smoothstep(0.1, 0.11, dot(viewDir, v_Normal)), 0.0, 1.0) * 2.0;
+    vec4 diffuse = texture(diffuseTex, v_UV) * vec4(vec3(ndl) + vec3(ndvl) + vec3(ndv), 1.0);
+    gl_FragColor = diffuse;
+    // gl_FragColor = vec4(vec3(ndv), 1.0);
+    // gl_FragColor = vec4(viewDir, 1.0);
+}
+`
+
 
 
 const width = window.innerWidth;
@@ -79,8 +153,9 @@ const baseMaterial = new THREE.ShaderMaterial({
         time: {value: 0.0}
     },
     vertexShader: Base_VS,
-    fragmentShader: Base_PS
+    fragmentShader: Text_PS
 });
+
 
 // const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
 // scene.add(ambientLight);
@@ -89,12 +164,15 @@ const baseMaterial = new THREE.ShaderMaterial({
 // directionalLight.position.set(5, 5, 5);
 // scene.add(directionalLight);
 
-// ++++++++++ GLTF LOADER +++++++++++++
+// ++++++++++++++ LOADERS +++++++++++++
 
 const loader = new GLTFLoader();
+const textureLoader = new THREE.TextureLoader();
 const dracoLoader = new DRACOLoader();
 dracoLoader.setDecoderPath( '/examples/jsm/libs/draco/' );
 loader.setDRACOLoader( dracoLoader );
+
+
 
 // 5. OBJECTS - Create and add 3D objects
 /*const geometry = new THREE.BoxGeometry(1, 1, 1);
@@ -126,18 +204,73 @@ async function loadModel(path) {
     }
 }
 
+async function loadMaterialModel(path, material) {
+    try {
+        const gltf = await loader.loadAsync(path);
+        const model = gltf.scene;
+
+        model.traverse((child) => {
+           if (child.isMesh) {
+            child.material = material;
+            
+            // console.log("Applying Material to", child.name);
+           } 
+        });
+
+        scene.add(model);
+        return model
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+
+
 var text = await loadModel('meshes/SM_WIPText.glb');
-text.position.z = 1.0;
+text.position.z = -2.0;
 
 
-var allen = await loadModel('meshes/SM_Allen_WelcomePose.glb');
-allen.rotation.x = -3.14*0.5;
+const texture = await textureLoader.loadAsync( 'textures/chibi_diffuse.png' );
+texture.magFilter = THREE.NearestFilter;
+console.log(texture);
+const charMaterial = new THREE.ShaderMaterial({
+    uniforms: {
+        time: {value: 0.0},
+        diffuseTex: {type:"t", value: texture}
+    },
+    vertexShader: Base_VS,
+    fragmentShader: Char_PS,
+    side: THREE.DoubleSide
+});
+var allen = await loadMaterialModel('meshes/SM_Allen_WelcomePose.glb', charMaterial);
+allen.rotation.x = (-3.14 * 0.5);
+allen.position.x = -4.0;
+allen.position.y = 1.0;
+allen.position.z = 1.0;
+
+
+
+const tableMaterial = new THREE.ShaderMaterial({
+    uniforms: {
+        time: {value: 0.0},
+        diffuseTex: {type:"t", value: texture}
+    },
+    vertexShader: Base_VS,
+    fragmentShader: Table_PS,
+    side: THREE.DoubleSide
+});
+var table = await loadMaterialModel('meshes/SM_TestBoard.glb', tableMaterial);
+table.position.z = 1.0;
+table.position.y = -1.0;
+
+
+
 // ++++++++ CAMERA CONTROLS +++++++++++
 let isDragging = false;
 let previousMousePosition = { x: 0, y: 0};
 let zoom = 2;
 
-const maxRange = 15.0 / aspect;
+const maxRange = 10.0 / aspect;
 
 // Disable right click context menu
 document.addEventListener('contextmenu', event => event.preventDefault());
@@ -161,7 +294,7 @@ renderer.domElement.addEventListener('mousemove', (e) => {
         camTargetPos.z -= deltaY * panSpeed;
 
         camTargetPos.x = Math.max(-maxRange, Math.min(maxRange, camTargetPos.x));
-        camTargetPos.z = Math.max(-maxRange, Math.min(maxRange, camTargetPos.z));
+        camTargetPos.z = Math.max(-maxRange, Math.min(maxRange * 0.1, camTargetPos.z));
 
         previousMousePosition = {x: e.clientX, y: e.clientY};
     }
@@ -199,8 +332,8 @@ function UpdateCameraFrustum(dt) {
 
     const aspect = window.innerWidth / window.innerHeight;
     smoothZoom = lerp(smoothZoom, zoom, dt * zoomSpeed);
-    const FoV = 45 / smoothZoom;
-    // camera.fov = FoV;
+    
+    camera.fov = FoV;
     camera.position.y = 10 / smoothZoom;
     camera.aspect = aspect;
     camera.updateProjectionMatrix();
@@ -208,8 +341,8 @@ function UpdateCameraFrustum(dt) {
 
 let returnDelay = 5.0;
 let returnTime = 0.0;
-const buffer = 5.0;
-const returnSpeed = .1;
+const buffer = 2.0;
+const returnSpeed = .01;
 
 function returnCameraToBounds(deltaTime) {
 
@@ -249,7 +382,9 @@ function update() {
 
     text.rotation.x = Math.cos(t) * 0.015;
     text.rotation.y = Math.sin(t) * 0.025;
-    allen.rotation.y = t;
+    
+    allen.rotation.z = Math.cos(t) * 0.05;
+    allen.rotation.y = Math.sin(t) * 0.5;
 
     returnCameraToBounds(dt);
     UpdateCameraFrustum(dt);
