@@ -127,7 +127,11 @@ async function loadModel(path) {
 }
 
 var text = await loadModel('meshes/SM_WIPText.glb');
+text.position.z = 1.0;
 
+
+var allen = await loadModel('meshes/SM_Allen_WelcomePose.glb');
+allen.rotation.x = -3.14*0.5;
 // ++++++++ CAMERA CONTROLS +++++++++++
 let isDragging = false;
 let previousMousePosition = { x: 0, y: 0};
@@ -245,6 +249,7 @@ function update() {
 
     text.rotation.x = Math.cos(t) * 0.015;
     text.rotation.y = Math.sin(t) * 0.025;
+    allen.rotation.y = t;
 
     returnCameraToBounds(dt);
     UpdateCameraFrustum(dt);
