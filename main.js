@@ -80,7 +80,7 @@ void main() {
     float ndl = dot(lightDir, normalize(v_Normal)) * 0.5 + 0.5;
 
     // gl_FragColor = vec4(hsv2rgb(vec3(fract((v_Position.x * .5) + time * 0.1), 0.8, .5)) * ndl, 1.0);
-    gl_FragColor = vec4(vec3(ndl) * 0.1, 1.0);
+    gl_FragColor = vec4(vec3(ndl) * vec3(0.08, 0.05, 0.0), 1.0);
 }
 `;
 
@@ -245,8 +245,8 @@ const charMaterial = new THREE.ShaderMaterial({
 var allen = await loadMaterialModel('meshes/SM_Allen_WelcomePose.glb', charMaterial);
 allen.rotation.x = (-3.14 * 0.5);
 allen.position.x = -4.0;
-allen.position.y = 1.0;
-allen.position.z = 1.0;
+allen.position.y = .5;
+allen.position.z = .8;
 
 
 
@@ -292,9 +292,6 @@ renderer.domElement.addEventListener('mousemove', (e) => {
         const panSpeed = 0.0085 / zoom;
         camTargetPos.x -= deltaX * panSpeed;
         camTargetPos.z -= deltaY * panSpeed;
-
-        camTargetPos.x = Math.max(-maxRange, Math.min(maxRange, camTargetPos.x));
-        camTargetPos.z = Math.max(-maxRange, Math.min(maxRange * 0.1, camTargetPos.z));
 
         previousMousePosition = {x: e.clientX, y: e.clientY};
     }
@@ -388,6 +385,9 @@ function update() {
 
     returnCameraToBounds(dt);
     UpdateCameraFrustum(dt);
+
+    camTargetPos.x = Math.max(-maxRange, Math.min(maxRange, camTargetPos.x));
+    camTargetPos.z = Math.max(-maxRange, Math.min((maxRange * 0.1) - Math.max((1-smoothZoom) * 2.0, 0.0), camTargetPos.z));
 
     camera.position.x = lerp(camera.position.x, camTargetPos.x, dt * cameraSpeed);
     camera.position.z = lerp(camera.position.z, camTargetPos.z, dt * cameraSpeed);
