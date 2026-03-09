@@ -1,19 +1,19 @@
 [
   {
-    "id": "void-runner",
-    "title": "Void Runner — Indie Game",
+    "id": "water-shader",
+    "title": "Advanced Water Shader",
     "section": "portfolio",
-    "image": null,
+    "image": "/images/ptfl-water.png",
     "gradient": "linear-gradient(135deg, #0d1b3e 0%, #1a3a5c 50%, #0a1628 100%)",
-    "link": "#"
+    "link": "/project.html?id=water-shader"
   },
   {
-    "id": "shader-toolkit",
-    "title": "Shader Toolkit",
+    "id": "vat-baker",
+    "title": "VAT Baker Tool",
     "section": "portfolio",
-    "image": null,
+    "image": "/images/ptfl-vatbaker.png",
     "gradient": "linear-gradient(135deg, #0f1a0f 0%, #1a2e1a 100%)",
-    "link": "#"
+    "link": "/project.html?id=vat-baker"
   },
   {
     "id": "away-short-film",
@@ -21,7 +21,7 @@
     "section": "portfolio",
     "image": null,
     "gradient": "linear-gradient(135deg, #3a7bd5 0%, #74b9e8 100%)",
-    "link": "#"
+    "link": "/project.html?id=away-short-film"
   },
   {
     "id": "procedural-terrain",
@@ -29,7 +29,7 @@
     "section": "portfolio",
     "image": null,
     "gradient": "linear-gradient(135deg, #1a1028 0%, #3d1f5e 100%)",
-    "link": "#"
+    "link": "/project.html?id=procedural-terrain"
   },
   {
     "id": "echo-chamber",
@@ -37,7 +37,7 @@
     "section": "game",
     "image": null,
     "gradient": "linear-gradient(135deg, #0e1c12 0%, #1e4a2a 100%)",
-    "link": "#"
+    "link": "/project.html?id=echo-chamber"
   },
   {
     "id": "orbit-arcade",
@@ -45,7 +45,7 @@
     "section": "game",
     "image": null,
     "gradient": "linear-gradient(135deg, #1c0e0e 0%, #4a1e1e 100%)",
-    "link": "#"
+    "link": "/project.html?id=orbit-arcade"
   },
   {
     "id": "data-drift",
@@ -53,7 +53,7 @@
     "section": "game",
     "image": null,
     "gradient": "linear-gradient(135deg, #0e1520 0%, #1e3a50 100%)",
-    "link": "#"
+    "link": "/project.html?id=data-drift"
   },
   {
     "id": "helix-runner",
@@ -61,6 +61,6 @@
     "section": "game",
     "image": null,
     "gradient": "linear-gradient(135deg, #1a160a 0%, #4a3c10 100%)",
-    "link": "#"
+    "link": "/project.html?id=helix-runner"
   }
 ]

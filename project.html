@@ -3,13 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Allen Velazco — Technical Artist Portfolio</title>
+<title>Project — Allen Velazco</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=DM+Mono:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-
 
 <!-- MOBILE HEADER -->
 <header class="mobile-header">
@@ -31,56 +30,61 @@
     <div class="tagline">Aspiring Technical artist</div>
 
     <nav class="nav-section">
-      <div class="nav-link active">
+      <a href="/index.html" class="nav-link">
         <span class="arrow">→</span> Home
-      </div>
-      <a href="#about" class="nav-link">
+      </a>
+      <div class="nav-link">
         <span class="arrow">→</span> About Me
-      </a>
+      </div>
     </nav>
 
-    <nav class="nav-section">
-      <a href="#portfolio" class="nav-link">
+    <nav class="nav-section" id="nav-portfolio-section">
+      <div class="nav-link" id="nav-portfolio">
         <span class="arrow">→</span> Portfolio Pieces
-      </a>
-      <a href="#games" class="nav-link">
-        <span class="arrow">→</span> Game Projects
-      </a>
+      </div>
     </nav>
 
+    <nav class="nav-section" id="nav-game-section">
+      <div class="nav-link" id="nav-game">
+        <span class="arrow">→</span> Game Projects
+      </div>
+    </nav>
 
   </aside>
 
   <!-- MAIN -->
   <main class="main">
 
-    <!-- Portfolio Pieces -->
-    <div class="section-header" id="portfolio" style="scroll-margin-top:40px;">
-      <span class="section-title">Portfolio Pieces</span>
-    </div>
-
-    <div class="projects-grid" id="portfolio-grid"></div>
-
-    <!-- Game Projects -->
-    <div class="section-header" id="games" style="margin-top:36px; scroll-margin-top:40px;">
-      <span class="section-title">Game Projects</span>
-    </div>
-
-    <div class="projects-grid" id="game-grid" style="margin-bottom:56px;"></div>
-
-    <!-- About Me -->
-    <div class="divider"></div>
-    <section id="about" style="padding:40px 0 40px; scroll-margin-top:40px;">
-      <div class="section-header">
-        <span class="section-title">About Me</span>
-      </div>
-    </section>
-
   </main>
-
 
 </div>
 
+
+<script>
+  // Inject active project into sidebar nav
+  (async () => {
+    const id = new URLSearchParams(location.search).get('id');
+    if (!id) return;
+    let projects;
+    try {
+      const res = await fetch('/data/projects.json');
+      projects = await res.json();
+    } catch { return; }
+    const project = projects.find(p => p.id === id);
+    if (!project) return;
+
+    const sectionId = project.section === 'game' ? 'nav-game' : 'nav-portfolio';
+    const navLink = document.getElementById(sectionId);
+    if (navLink) {
+      navLink.classList.add('active');
+      const sublink = document.createElement('div');
+      sublink.className = 'nav-sublink';
+      sublink.textContent = project.title;
+      navLink.insertAdjacentElement('afterend', sublink);
+    }
+    document.title = `${project.title} — Allen Velazco`;
+  })();
+</script>
 
 <script>
   const toggle = document.getElementById('menuToggle');
@@ -90,7 +94,6 @@
     toggle.classList.toggle('open', isOpen);
     toggle.querySelector('.hamburger').nextSibling.textContent = isOpen ? ' Close' : ' Menu';
   });
-  // Close sidebar when a nav link is clicked
   sidebar.querySelectorAll('.nav-link, .social-link').forEach(link => {
     link.addEventListener('click', () => {
       sidebar.classList.remove('open');
@@ -98,7 +101,6 @@
     });
   });
 </script>
-<script type="module" src="/portfolio-loader.js"></script>
 <script type="module" src="/sidebar-scene.js"></script>
 </body>
 </html>
