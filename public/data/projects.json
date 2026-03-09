@@ -1,0 +1,66 @@
+[
+  {
+    "id": "void-runner",
+    "title": "Void Runner — Indie Game",
+    "section": "portfolio",
+    "image": null,
+    "gradient": "linear-gradient(135deg, #0d1b3e 0%, #1a3a5c 50%, #0a1628 100%)",
+    "link": "#"
+  },
+  {
+    "id": "shader-toolkit",
+    "title": "Shader Toolkit",
+    "section": "portfolio",
+    "image": null,
+    "gradient": "linear-gradient(135deg, #0f1a0f 0%, #1a2e1a 100%)",
+    "link": "#"
+  },
+  {
+    "id": "away-short-film",
+    "title": "Away — Short Film",
+    "section": "portfolio",
+    "image": null,
+    "gradient": "linear-gradient(135deg, #3a7bd5 0%, #74b9e8 100%)",
+    "link": "#"
+  },
+  {
+    "id": "procedural-terrain",
+    "title": "Procedural Terrain — Tool",
+    "section": "portfolio",
+    "image": null,
+    "gradient": "linear-gradient(135deg, #1a1028 0%, #3d1f5e 100%)",
+    "link": "#"
+  },
+  {
+    "id": "echo-chamber",
+    "title": "Echo Chamber — Puzzle",
+    "section": "game",
+    "image": null,
+    "gradient": "linear-gradient(135deg, #0e1c12 0%, #1e4a2a 100%)",
+    "link": "#"
+  },
+  {
+    "id": "orbit-arcade",
+    "title": "Orbit — Arcade",
+    "section": "game",
+    "image": null,
+    "gradient": "linear-gradient(135deg, #1c0e0e 0%, #4a1e1e 100%)",
+    "link": "#"
+  },
+  {
+    "id": "data-drift",
+    "title": "DataDrift — Strategy",
+    "section": "game",
+    "image": null,
+    "gradient": "linear-gradient(135deg, #0e1520 0%, #1e3a50 100%)",
+    "link": "#"
+  },
+  {
+    "id": "helix-runner",
+    "title": "Helix — Runner",
+    "section": "game",
+    "image": null,
+    "gradient": "linear-gradient(135deg, #1a160a 0%, #4a3c10 100%)",
+    "link": "#"
+  }
+]
