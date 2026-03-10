@@ -41,6 +41,48 @@ function buildCard(project, delay) {
   label.textContent = project.title;
   card.appendChild(label);
 
+  // Tilt effect — only active after fade-in completes
+  const MAX_TILT = 4;
+  let tiltReady = false;
+
+  card.addEventListener('animationend', () => {
+    card.style.animation = 'none';
+    card.style.opacity = '1';
+    card.style.transform = 'none';
+    tiltReady = true;
+  }, { once: true });
+
+  let tracking = false;
+  let hovered = false;
+  card.addEventListener('mouseenter', () => {
+    if (!tiltReady) return;
+    hovered = true;
+    tracking = false;
+    card.style.zIndex = '10';
+    card.style.transition = 'transform 0.35s ease';
+    card.style.transform = 'perspective(700px) rotateX(0deg) rotateY(0deg) scale(1.06)';
+  });
+  card.addEventListener('transitionend', () => {
+    if (!tiltReady || !hovered) return;
+    tracking = true;
+    card.style.transition = 'none';
+  });
+  card.addEventListener('mousemove', e => {
+    if (!tiltReady || !tracking) return;
+    const rect = card.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width  - 0.5;
+    const y = (e.clientY - rect.top)  / rect.height - 0.5;
+    card.style.transform = `perspective(700px) rotateX(${-y * MAX_TILT}deg) rotateY(${x * MAX_TILT}deg) scale(1.06)`;
+  });
+  card.addEventListener('mouseleave', () => {
+    if (!tiltReady) return;
+    hovered = false;
+    tracking = false;
+    card.style.transition = 'transform 0.4s ease';
+    card.style.transform = 'perspective(700px) rotateX(0deg) rotateY(0deg) scale(1)';
+    card.style.zIndex = '';
+  });
+
   return card;
 }
 
