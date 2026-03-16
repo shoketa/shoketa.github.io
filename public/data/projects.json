@@ -21,7 +21,7 @@
     "section": "portfolio",
     "image": "/images/ptfl-scarlet.png",
     "gradient": "linear-gradient(135deg, #1c0e0e 0%, #4a1e1e 100%)",
-    "link": "/project.html?id=away-short-film"
+    "link": "/project.html?id=scarlet-rosette"
   },
   {
     "id": "volumetrics",
@@ -29,15 +29,15 @@
     "section": "portfolio",
     "image": "/images/ptfl-volumetric.png",
     "gradient": "linear-gradient(135deg, #1c0e0e 0%, #4a1e1e 100%)",
-    "link": "/project.html?id=procedural-terrain"
+    "link": "/project.html?id=volumetrics"
   },
   {
     "id": "p5",
     "title": "P5 - Spite: Blood and Gold",
     "section": "game",
-    "image": "/images/placeholder.png",
+    "image": "/images/p5-blood-and-gold.png",
     "gradient": "linear-gradient(135deg, #1c0e0e 0%, #4a1e1e 100%)",
-    "link": "/project.html?id=echo-chamber"
+    "link": "/project.html?id=p5"
   },
   {
     "id": "p6",
@@ -45,7 +45,7 @@
     "section": "game",
     "image": "/images/placeholder.png",
     "gradient": "linear-gradient(135deg, #1c0e0e 0%, #4a1e1e 100%)",
-    "link": "/project.html?id=orbit-arcade"
+    "link": "/project.html?id=p6"
   },
   {
     "id": "p7",
@@ -53,7 +53,7 @@
     "section": "game",
     "image": "/images/placeholder.png",
     "gradient": "linear-gradient(135deg, #1c0e0e 0%, #4a1e1e 100%)",
-    "link": "/project.html?id=data-drift"
+    "link": "/project.html?id=p7"
   },
   {
     "id": "vulkan-engine",
@@ -61,6 +61,6 @@
     "section": "personal",
     "image": "/images/pp-vulkan.png",
     "gradient": "linear-gradient(135deg, #0d1b3e 0%, #1a3a5c 100%)",
-    "link": "#"
+    "link": "/project.html?id=vulkan-engine"
   }
 ]

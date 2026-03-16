@@ -7,6 +7,156 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=DM+Mono:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/style.css">
+<style>
+  .project-page {
+    padding: 48px 36px 96px;
+    overflow-y: auto;
+  }
+
+  .project-inner {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--text-muted);
+    transition: color 0.15s;
+    margin-bottom: 40px;
+  }
+
+  .back-link:hover { color: var(--text); }
+
+  .project-hero {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border-radius: 8px;
+    display: block;
+    margin-bottom: 36px;
+    background: var(--bg2);
+  }
+
+  .project-hero-placeholder {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: 8px;
+    margin-bottom: 36px;
+  }
+
+  .project-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: -0.4px;
+    color: var(--text);
+    margin-bottom: 32px;
+    line-height: 1.2;
+  }
+
+  /* Markdown content */
+  .project-content h1,
+  .project-content h2,
+  .project-content h3,
+  .project-content h4 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    color: var(--text);
+    margin: 32px 0 12px;
+    line-height: 1.3;
+  }
+
+  .project-content h1 { font-size: 20px; }
+  .project-content h2 { font-size: 17px; }
+  .project-content h3 { font-size: 15px; }
+  .project-content h4 { font-size: 13px; letter-spacing: 0.2px; }
+
+  .project-content p {
+    color: var(--text-muted);
+    font-size: 13px;
+    line-height: 1.8;
+    margin-bottom: 16px;
+  }
+
+  .project-content img {
+    width: 100%;
+    border-radius: 6px;
+    display: block;
+    margin: 24px 0;
+  }
+
+  .project-content ul,
+  .project-content ol {
+    padding-left: 20px;
+    margin-bottom: 16px;
+  }
+
+  .project-content li {
+    color: var(--text-muted);
+    font-size: 13px;
+    line-height: 1.8;
+  }
+
+  .project-content a {
+    color: var(--accent);
+    text-underline-offset: 3px;
+    text-decoration: underline;
+    text-decoration-color: rgba(200,245,90,0.3);
+    transition: text-decoration-color 0.15s;
+  }
+
+  .project-content a:hover { text-decoration-color: var(--accent); }
+
+  .project-content code {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1px 6px;
+    color: var(--accent);
+  }
+
+  .project-content pre {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px 20px;
+    overflow-x: auto;
+    margin: 20px 0;
+  }
+
+  .project-content pre code {
+    background: none;
+    border: none;
+    padding: 0;
+    color: var(--text);
+    font-size: 12px;
+    line-height: 1.7;
+  }
+
+  .project-content hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 32px 0;
+  }
+
+  .project-content blockquote {
+    border-left: 2px solid var(--accent);
+    padding-left: 16px;
+    margin: 20px 0;
+    color: var(--text-muted);
+    font-style: italic;
+  }
+
+  @media (max-width: 680px) {
+    .project-page { padding: 24px 20px 64px; }
+    .project-title { font-size: 20px; }
+  }
+</style>
 </head>
 <body>
 
@@ -30,61 +180,44 @@
     <div class="tagline">Aspiring Technical artist</div>
 
     <nav class="nav-section">
-      <a href="/index.html" class="nav-link">
+      <a href="/" class="nav-link">
         <span class="arrow">→</span> Home
       </a>
-      <div class="nav-link">
+      <a href="/#about" class="nav-link">
         <span class="arrow">→</span> About Me
-      </div>
+      </a>
     </nav>
 
-    <nav class="nav-section" id="nav-portfolio-section">
-      <div class="nav-link" id="nav-portfolio">
+    <nav class="nav-section">
+      <a href="/#portfolio" class="nav-link">
         <span class="arrow">→</span> Portfolio Pieces
-      </div>
-    </nav>
-
-    <nav class="nav-section" id="nav-game-section">
-      <div class="nav-link" id="nav-game">
+      </a>
+      <a href="/#games" class="nav-link">
         <span class="arrow">→</span> Game Projects
-      </div>
+      </a>
+      <a href="/#personal" class="nav-link">
+        <span class="arrow">→</span> Personal Projects
+      </a>
     </nav>
 
   </aside>
 
   <!-- MAIN -->
-  <main class="main">
+  <main class="project-page">
+    <div class="project-inner">
+      <a href="/" class="back-link fade-in">
+        <span class="arrow">←</span> Back
+      </a>
 
+      <div id="hero-slot"></div>
+
+      <h1 class="project-title fade-in" id="project-title">Loading…</h1>
+
+      <article class="project-content fade-in" id="project-content"></article>
+    </div>
   </main>
 
 </div>
-
-
-<script>
-  // Inject active project into sidebar nav
-  (async () => {
-    const id = new URLSearchParams(location.search).get('id');
-    if (!id) return;
-    let projects;
-    try {
-      const res = await fetch('/data/projects.json');
-      projects = await res.json();
-    } catch { return; }
-    const project = projects.find(p => p.id === id);
-    if (!project) return;
-
-    const sectionId = project.section === 'game' ? 'nav-game' : 'nav-portfolio';
-    const navLink = document.getElementById(sectionId);
-    if (navLink) {
-      navLink.classList.add('active');
-      const sublink = document.createElement('div');
-      sublink.className = 'nav-sublink';
-      sublink.textContent = project.title;
-      navLink.insertAdjacentElement('afterend', sublink);
-    }
-    document.title = `${project.title} — Allen Velazco`;
-  })();
-</script>
 
 <script>
   const toggle = document.getElementById('menuToggle');
@@ -94,13 +227,9 @@
     toggle.classList.toggle('open', isOpen);
     toggle.querySelector('.hamburger').nextSibling.textContent = isOpen ? ' Close' : ' Menu';
   });
-  sidebar.querySelectorAll('.nav-link, .social-link').forEach(link => {
-    link.addEventListener('click', () => {
-      sidebar.classList.remove('open');
-      toggle.classList.remove('open');
-    });
-  });
 </script>
+<script type="module" src="/project-loader.js"></script>
 <script type="module" src="/sidebar-scene.js"></script>
+
 </body>
 </html>
