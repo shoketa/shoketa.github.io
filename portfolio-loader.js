@@ -1,12 +1,15 @@
+import { marked } from 'marked';
+
 /**
  * portfolio-loader.js
  * Fetches /data/projects.json and renders project cards into
- * #portfolio-grid and #game-grid.
+ * #portfolio-grid, #game-grid, and #personal-grid.
+ * Also fetches /content/about.md and renders it into #about-content.
  *
  * JSON schema per entry:
  *   id       {string}  unique identifier
  *   title    {string}  card label text
- *   section  {string}  "portfolio" | "game"
+ *   section  {string}  "portfolio" | "game" | "personal"
  *   image    {string|null}  path to thumbnail image, or null for gradient bg
  *   gradient {string}  CSS gradient used when image is null
  *   link     {string}  href for the card (use "#" as placeholder)
@@ -110,13 +113,25 @@ async function loadPortfolio() {
     portfolioGrid?.appendChild(buildCard(p, 0.1 + i * 0.05));
   });
 
+  if (gameGrid) gameGrid.style.gridTemplateColumns = 'repeat(3, 1fr)';
   gameItems.forEach((p, i) => {
     gameGrid?.appendChild(buildCard(p, 0.1 + i * 0.05));
   });
 
+  if (personalGrid) personalGrid.style.gridTemplateColumns = 'repeat(3, 1fr)';
   personalItems.forEach((p, i) => {
     personalGrid?.appendChild(buildCard(p, 0.1 + i * 0.05));
   });
+
+  const aboutEl = document.getElementById('about-content');
+  if (aboutEl) {
+    try {
+      const res = await fetch('/content/about.md');
+      if (res.ok) aboutEl.innerHTML = marked.parse(await res.text());
+    } catch (err) {
+      console.error('[portfolio-loader] about.md', err);
+    }
+  }
 }
 
 loadPortfolio();

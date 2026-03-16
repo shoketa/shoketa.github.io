@@ -1,5 +1,5 @@
 # Project Goal
-My main goal for this project was to create something interactive using render targets. During that process, I sort of flowed into because I thought it would a nice challenge to both create a good-looking water shader along with the interaction system.
+My main goal for this project was to create something interactive using render targets. During that process, I sort of flowed into a water shader because I thought it would a nice challenge to both create a good-looking water shader along with the interaction system.
 # Summary
 Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.
 # Breakdown
@@ -11,7 +11,7 @@ Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapi
 ![[ptfl-water-rt1.png]]
 
 
-#### Sources
+## Sources
 - Lorem ipsum
 - Lorem ipsum
 - Lorem ipsum
