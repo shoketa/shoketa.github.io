@@ -99,10 +99,12 @@ async function loadPortfolio() {
   }
 
   const portfolioGrid = document.getElementById('portfolio-grid');
-  const gameGrid = document.getElementById('game-grid');
+  const gameGrid      = document.getElementById('game-grid');
+  const personalGrid  = document.getElementById('personal-grid');
 
   const portfolioItems = projects.filter(p => p.section === 'portfolio');
   const gameItems      = projects.filter(p => p.section === 'game');
+  const personalItems  = projects.filter(p => p.section === 'personal');
 
   portfolioItems.forEach((p, i) => {
     portfolioGrid?.appendChild(buildCard(p, 0.1 + i * 0.05));
@@ -110,6 +112,10 @@ async function loadPortfolio() {
 
   gameItems.forEach((p, i) => {
     gameGrid?.appendChild(buildCard(p, 0.1 + i * 0.05));
+  });
+
+  personalItems.forEach((p, i) => {
+    personalGrid?.appendChild(buildCard(p, 0.1 + i * 0.05));
   });
 }
 

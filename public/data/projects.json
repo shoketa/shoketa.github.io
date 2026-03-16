@@ -1,7 +1,7 @@
 [
   {
     "id": "water-shader",
-    "title": "Advanced Water Shader",
+    "title": "Interactive Water using RTs",
     "section": "portfolio",
     "image": "/images/ptfl-water.png",
     "gradient": "linear-gradient(135deg, #1c0e0e 0%, #4a1e1e 100%)",
@@ -25,9 +25,9 @@
   },
   {
     "id": "volumetrics",
-    "title": "Raymarched Volumetrics",
+    "title": "Raymarched Volumetrics in Custom Engine",
     "section": "portfolio",
-    "image": null,
+    "image": "/images/ptfl-volumetric.png",
     "gradient": "linear-gradient(135deg, #1c0e0e 0%, #4a1e1e 100%)",
     "link": "/project.html?id=procedural-terrain"
   },
@@ -35,7 +35,7 @@
     "id": "p5",
     "title": "P5 - Spite: Blood and Gold",
     "section": "game",
-    "image": null,
+    "image": "/images/placeholder.png",
     "gradient": "linear-gradient(135deg, #1c0e0e 0%, #4a1e1e 100%)",
     "link": "/project.html?id=echo-chamber"
   },
@@ -43,7 +43,7 @@
     "id": "p6",
     "title": "P6 - Aliens stole my sh**!",
     "section": "game",
-    "image": null,
+    "image": "/images/placeholder.png",
     "gradient": "linear-gradient(135deg, #1c0e0e 0%, #4a1e1e 100%)",
     "link": "/project.html?id=orbit-arcade"
   },
@@ -51,8 +51,16 @@
     "id": "p7",
     "title": "P7 - Undecided Game",
     "section": "game",
-    "image": null,
+    "image": "/images/placeholder.png",
     "gradient": "linear-gradient(135deg, #1c0e0e 0%, #4a1e1e 100%)",
     "link": "/project.html?id=data-drift"
+  },
+  {
+    "id": "vulkan-engine",
+    "title": "Custom C++ Vulkan Engine",
+    "section": "personal",
+    "image": "/images/pp-vulkan.png",
+    "gradient": "linear-gradient(135deg, #0d1b3e 0%, #1a3a5c 100%)",
+    "link": "#"
   }
 ]
