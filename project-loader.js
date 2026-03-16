@@ -35,4 +35,13 @@ if (project?.image) {
   heroSlot.appendChild(div);
 }
 
-document.getElementById('project-content').innerHTML = marked.parse(mdText);
+// Convert Obsidian wiki-image syntax
+// ![[file.png]]       →  ![file.png](/images/file.png)
+// ![[file.png|352]]   →  <img src="/images/file.png" alt="file.png" width="352">
+const normalised = mdText.replace(/!\[\[([^\]|]+)(?:\|(\d+))?\]\]/g, (_, file, width) =>
+  width
+    ? `<img src="/images/${file}" alt="${file}" style="width:${width}px">`
+    : `![${file}](/images/${file})`
+);
+
+document.getElementById('project-content').innerHTML = marked.parse(normalised);
