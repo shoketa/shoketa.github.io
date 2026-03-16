@@ -1,4 +1,5 @@
 import { marked } from 'marked';
+import { createScene } from './sidebar-scene.js';
 
 /**
  * portfolio-loader.js
@@ -135,3 +136,23 @@ async function loadPortfolio() {
 }
 
 loadPortfolio();
+
+// Flip card: delayed flip + lazy scene init
+const flipCard = document.querySelector('.flip-card');
+const aboutScene = document.getElementById('about-scene');
+if (flipCard && aboutScene) {
+  let flipTimer = null;
+  let sceneInited = false;
+
+  flipCard.addEventListener('mouseenter', () => {
+    flipTimer = setTimeout(() => {
+      flipCard.classList.add('flipped');
+      if (!sceneInited) { sceneInited = true; createScene(aboutScene); }
+    }, 1000);
+  });
+
+  flipCard.addEventListener('mouseleave', () => {
+    clearTimeout(flipTimer);
+    flipCard.classList.remove('flipped');
+  });
+}

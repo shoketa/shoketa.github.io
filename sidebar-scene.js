@@ -1,9 +1,6 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
-const container = document.getElementById('sidebar-scene');
-if (!container) throw new Error('[sidebar-scene] #sidebar-scene not found');
-
 // ── Shaders ──────────────────────────────────────────────────────────────────
 
 const Base_VS = `
@@ -49,32 +46,7 @@ void main() {
 }
 `;
 
-// ── Renderer ─────────────────────────────────────────────────────────────────
-
-const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-renderer.setPixelRatio(window.devicePixelRatio);
-renderer.setClearColor(0x000000, 0);
-container.appendChild(renderer.domElement);
-
-const scene = new THREE.Scene();
-
-const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 100);
-camera.position.set(0, 1.1, 3.8);
-camera.lookAt(0, 0.6, 0);
-
-function resize() {
-    const w = container.clientWidth;
-    const h = container.clientHeight;
-    renderer.setSize(w, h, false);
-    camera.aspect = w / h;
-    camera.updateProjectionMatrix();
-}
-
-const ro = new ResizeObserver(resize);
-ro.observe(container);
-resize();
-
-// ── Assets ───────────────────────────────────────────────────────────────────
+// ── Shared assets (loaded once) ───────────────────────────────────────────────
 
 const textureLoader = new THREE.TextureLoader();
 const loader = new GLTFLoader();
@@ -82,89 +54,100 @@ const loader = new GLTFLoader();
 const texture = await textureLoader.loadAsync('textures/chibi_diffuse.png');
 texture.magFilter = THREE.NearestFilter;
 
-const charMaterial = new THREE.ShaderMaterial({
-    uniforms: {
-        time:       { value: 0 },
-        diffuseTex: { type: 't', value: texture }
-    },
-    vertexShader:   Base_VS,
-    fragmentShader: Char_PS,
-    side: THREE.DoubleSide
-});
-
 const gltf = await loader.loadAsync('meshes/SM_Allen_WelcomePose.glb');
-const model = gltf.scene;
 
-model.traverse(child => {
-    if (child.isMesh) child.material = charMaterial;
-});
+// ── createScene ───────────────────────────────────────────────────────────────
 
-// Blender Z-up → Three.js Y-up
-// model.rotation.x = -Math.PI * 0.5;
-scene.add(model);
+export function createScene(container) {
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setClearColor(0x000000, 0);
+    container.appendChild(renderer.domElement);
 
-// Fade in once the model is ready
-requestAnimationFrame(() => container.classList.add('loaded'));
+    const scene = new THREE.Scene();
 
-// ── Drag to spin ──────────────────────────────────────────────────────────────
+    const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 100);
+    camera.position.set(0, 1.1, 3.8);
+    camera.lookAt(0, 0.6, 0);
 
-let isDragging = false;
-let lastX = 0;
-let manualRotY = 0;
-let velocity = 0;
-const damping = 0.92;
-
-const canvas = renderer.domElement;
-canvas.style.cursor = 'grab';
-
-function onDragStart(x) {
-    isDragging = true;
-    lastX = x;
-    velocity = 0;
-    canvas.style.cursor = 'grabbing';
-}
-
-function onDragMove(x) {
-    if (!isDragging) return;
-    const delta = (x - lastX) * 0.01;
-    manualRotY += delta;
-    velocity = delta;
-    lastX = x;
-}
-
-function onDragEnd() {
-    isDragging = false;
-    canvas.style.cursor = 'grab';
-}
-
-canvas.addEventListener('mousedown',  e => onDragStart(e.clientX));
-window.addEventListener('mousemove',  e => onDragMove(e.clientX));
-window.addEventListener('mouseup',    () => onDragEnd());
-
-canvas.addEventListener('touchstart', e => { e.preventDefault(); onDragStart(e.touches[0].clientX); }, { passive: false });
-canvas.addEventListener('touchmove',  e => { e.preventDefault(); onDragMove(e.touches[0].clientX); },  { passive: false });
-canvas.addEventListener('touchend',   () => onDragEnd());
-
-// ── Animation loop ───────────────────────────────────────────────────────────
-
-const clock = new THREE.Clock();
-let t = 0;
-
-function update() {
-    requestAnimationFrame(update);
-    const dt = Math.min(clock.getDelta(), 0.1);
-    t += dt;
-
-    if (!isDragging) {
-        velocity *= damping;
-        manualRotY += velocity;
+    function resize() {
+        const w = container.clientWidth;
+        const h = container.clientHeight;
+        renderer.setSize(w, h, false);
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
     }
 
-    charMaterial.uniforms.time.value = t;
-    model.rotation.z = Math.cos(t * 0.8) * 0.04;
-    model.rotation.y = manualRotY + (isDragging ? 0 : Math.sin(t * 0.4) * 0.18);
+    const ro = new ResizeObserver(resize);
+    ro.observe(container);
+    resize();
 
-    renderer.render(scene, camera);
+    const charMaterial = new THREE.ShaderMaterial({
+        uniforms: {
+            time:       { value: 0 },
+            diffuseTex: { type: 't', value: texture }
+        },
+        vertexShader:   Base_VS,
+        fragmentShader: Char_PS,
+        side: THREE.DoubleSide
+    });
+
+    const model = gltf.scene.clone();
+    model.traverse(child => {
+        if (child.isMesh) child.material = charMaterial;
+    });
+
+    // Blender Z-up → Three.js Y-up
+    // model.rotation.x = -Math.PI * 0.5;
+    scene.add(model);
+
+    requestAnimationFrame(() => container.classList.add('loaded'));
+
+    // ── Drag to spin ──────────────────────────────────────────────────────────
+
+    let isDragging = false;
+    let lastX = 0;
+    let manualRotY = 0;
+    let velocity = 0;
+    const damping = 0.92;
+
+    const canvas = renderer.domElement;
+    canvas.style.cursor = 'grab';
+
+    function onDragStart(x) { isDragging = true; lastX = x; velocity = 0; canvas.style.cursor = 'grabbing'; }
+    function onDragMove(x)  { if (!isDragging) return; const d = (x - lastX) * 0.01; manualRotY += d; velocity = d; lastX = x; }
+    function onDragEnd()    { isDragging = false; canvas.style.cursor = 'grab'; }
+
+    canvas.addEventListener('mousedown',  e => onDragStart(e.clientX));
+    window.addEventListener('mousemove',  e => onDragMove(e.clientX));
+    window.addEventListener('mouseup',    () => onDragEnd());
+    canvas.addEventListener('touchstart', e => { e.preventDefault(); onDragStart(e.touches[0].clientX); }, { passive: false });
+    canvas.addEventListener('touchmove',  e => { e.preventDefault(); onDragMove(e.touches[0].clientX); },  { passive: false });
+    canvas.addEventListener('touchend',   () => onDragEnd());
+
+    // ── Animation loop ────────────────────────────────────────────────────────
+
+    const clock = new THREE.Clock();
+    let t = 0;
+
+    function update() {
+        requestAnimationFrame(update);
+        const dt = Math.min(clock.getDelta(), 0.1);
+        t += dt;
+
+        if (!isDragging) { velocity *= damping; manualRotY += velocity; }
+
+        charMaterial.uniforms.time.value = t;
+        model.rotation.z = Math.cos(t * 0.8) * 0.04;
+        model.rotation.y = manualRotY + (isDragging ? 0 : Math.sin(t * 0.4) * 0.18);
+
+        renderer.render(scene, camera);
+    }
+
+    update();
 }
 
-update();
+// ── Init sidebar ──────────────────────────────────────────────────────────────
+
+const sidebarContainer = document.getElementById('sidebar-scene');
+if (sidebarContainer) createScene(sidebarContainer);
