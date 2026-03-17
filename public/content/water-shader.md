@@ -1,15 +1,41 @@
-# Project Goal
+
+
+### Project Goal
 My main goal for this project was to create something interactive using render targets. During that process, I sort of flowed into a water shader because I thought it would a nice challenge to both create a good-looking water shader along with the interaction system.
 
-# Summary
-For this project, I designed an interaction system in UE5 using Niagara and an advanced water shader that reads from the system. 
 # Breakdown
-Before starting this project I wanted to get some references for interactive shaders/systems. One that stood out for me was [PrismaticaDev](https://www.youtube.com/@PrismaticaDev)'s Interaction Plugin - Prismatiscape. His system was a bit too advanced for my scope but I still wanted to take some aspects to use for my project. I took the general idea of using shapes inside a shader to write to a render target. I knew of a way to do that in other engines. Namely, Unity but I've never done that in Unreal so my next step was to look for more references.
-![[ptfl-water-rt2.png]]  
 
-Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.
+### Niagara System Breakdown
+For the interaction system, I use two render targets, one uses the state of each object intersecting with the water plane at that frame, and the other uses the previous render target to generate normals, waves and a mask in RGBA respectively over time. The secondary render target also converts it's output as world space with domain wrapping.
+![[ptfl-water-rt-showcase.mp4]]
 
-![[ptfl-water-rt1.png]]
+| ![[ptfl-water-rt1.png\|400]] | ![[ptfl-water-rt2.png\|400]] |
+| ---------------------------- | ---------------------------- |
+| Intersection RT              | Wave RT                      |
+
+*Overview of the System:*
+![[ptfl-water-overview.png]]
+
+Here's an overview of the Niagara System. It looks simple but everything lies under the hood. Both emitters use the same Initialize Module
+
+*Inside the Initialize Module:*
+![[ptfl-water-init-rt.png]]
+
+Here, I set the render target's parameters with a size multiplier for optional down/up scaling.
+
+![[ptfl-water-localize.png]]
+
+In the "Draw RT" Module, before I actually draw the render target I chose to use a Niagara Parameter Collection to set the render target's origin in blueprint. I've also set it up so I can choose how big the area the interaction system affects with the scale parameter.
+
+![[ptfl-water-draw.png]]
+
+This is there I actually draw to the render target. Using Niagara's built-in Rigid Mesh Query, I can get the closest point of a mesh to the water plane and write the value to the render target.
+
+### Water Material Breakdown
+For the water material, I decided to create a few different layers
+
+## If I had more time...
+Researching this topic and getting a working prototype took longer than I expected so I didn't have enough time for the water simulation that I wanted. If I had more time, I probably would've tried to do more with the interaction system, for e.g a realistic wave propagation system similar to the fluid simulation from Unreal Engine's Content Examples.
 
 
 ## Sources

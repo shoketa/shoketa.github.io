@@ -82,7 +82,8 @@
     margin-bottom: 16px;
   }
 
-  .project-content img {
+  .project-content img,
+  .project-content video {
     width: 100%;
     border-radius: 6px;
     display: block;
@@ -151,6 +152,37 @@
     margin: 20px 0;
     color: var(--text-muted);
     font-style: italic;
+  }
+
+  .project-content table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 24px 0;
+    font-size: 14px;
+  }
+
+  .project-content th,
+  .project-content td {
+    border: 1px solid var(--border);
+    padding: 10px 14px;
+    text-align: left;
+    vertical-align: top;
+  }
+
+  .project-content th {
+    background: var(--surface);
+    color: var(--text-muted);
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+  }
+
+  .project-content td img,
+  .project-content td video {
+    width: 100%;
+    margin: 0;
+    border-radius: 4px;
   }
 
   @media (max-width: 680px) {
