@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=DM+Mono:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/style.css">
+<script>(function(){var t=localStorage.getItem('theme')||( window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');if(t==='light')document.documentElement.classList.add('light');})()</script>
 </head>
 <body>
 
@@ -52,6 +53,7 @@
     </nav>
 
 
+    <button id="theme-toggle" aria-label="Toggle theme"></button>
   </aside>
 
   <!-- MAIN -->
@@ -125,6 +127,7 @@
     });
   });
 </script>
+<script type="module" src="/theme.js"></script>
 <script type="module" src="/portfolio-loader.js"></script>
 <script type="module" src="/sidebar-scene.js"></script>
 </body>

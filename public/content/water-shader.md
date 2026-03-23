@@ -11,7 +11,7 @@ My main goal for this project was to create something interactive using render t
 
 
 *Graph overview of the entire project:*
-![[ptfl-water-overview-graph.png]]
+![[ptfl-water-overview-graph-dark.png / ptfl-water-overview-graph-light.png]]
 
 Here's an overview of the entire system and how it works:
 #### Interaction Blueprint

@@ -35,31 +35,46 @@ if (project?.image) {
   heroSlot.appendChild(div);
 }
 
-// Convert Obsidian wiki-image syntax
-// ![[file.mp4]]       →  <video> element from /videos/
-// ![[file.png]]       →  ![file.png](/images/file.png)
-// ![[file.png|352]]   →  <img src="/images/file.png" alt="file.png" width="352">
+// Convert Obsidian wiki-image/video syntax, using placeholders for videos so
+// marked never wraps <video> in <p> tags (it doesn't treat video as block-level).
 const VIDEO_EXTS = /\.(mp4|webm|ogg|mov)$/i;
-const normalised = mdText.replace(/!\[\[([^\]|]+)(?:\|(\d+))?\]\]/g, (_, file, width) => {
-  file = file.replace(/\\$/, ''); // strip trailing backslash Obsidian adds to \| inside table cells
+const videoBlocks = [];
+
+// Regex captures: ![[darkFile / lightFile|width]] or ![[file|width]]
+const normalised = mdText.replace(/!\[\[([^\]|/]+?)(?:\s*\/\s*([^\]|]+?))?\s*(?:\\?\|(\d+))?\]\]/g, (_, file, lightFile, width) => {
+  file = file.trim().replace(/\\$/, '');
+  if (lightFile) {
+    lightFile = lightFile.trim().replace(/\\$/, '');
+    const sizeAttr = width ? ` style="width:${width}px"` : '';
+    return `<span class="theme-img-pair">`
+         + `<img src="/images/${file}" alt="${file}" class="theme-img-dark"${sizeAttr}>`
+         + `<img src="/images/${lightFile}" alt="${lightFile}" class="theme-img-light"${sizeAttr}>`
+         + `</span>`;
+  }
   if (VIDEO_EXTS.test(file)) {
     const style = width ? ` style="width:${width}px"` : '';
-    return `<video src="/videos/${file}" autoplay loop muted playsinline${style}></video>`;
+    const tag = `<video src="/videos/${file}" autoplay loop muted playsinline${style}></video>`;
+    videoBlocks.push(tag);
+    return `VIDPLACEHOLDER${videoBlocks.length - 1}`;
   }
   const sizeAttr = width ? ` style="width:${width}px"` : '';
   return `<img src="/images/${file}" alt="${file}"${sizeAttr}>`;
 });
 
+let html = marked.parse(normalised);
+videoBlocks.forEach((tag, i) => { html = html.replaceAll(`VIDPLACEHOLDER${i}`, tag); });
+
 const contentEl = document.getElementById('project-content');
-contentEl.innerHTML = marked.parse(normalised);
+contentEl.innerHTML = html;
 
 // Lightbox
 const overlay = document.createElement('div');
 overlay.id = 'lightbox';
-overlay.innerHTML = '<img id="lightbox-img"><span id="lightbox-close">✕</span>';
+overlay.innerHTML = '<img id="lightbox-img"><video id="lightbox-video" controls playsinline></video><span id="lightbox-close">✕</span>';
 document.body.appendChild(overlay);
 
 const lbImg       = document.getElementById('lightbox-img');
+const lbVideo     = document.getElementById('lightbox-video');
 const lbCloseBtn  = document.getElementById('lightbox-close');
 const ZOOM_LEVELS = [1, 2, 3];
 
@@ -73,8 +88,27 @@ function lbApply(animate) {
   lbImg.style.cursor     = lbScale > 1 ? 'grab' : 'zoom-in';
 }
 
+function lbShowImg(src) {
+  lbImg.src = src;
+  lbImg.style.display = '';
+  lbVideo.style.display = 'none';
+  lbVideo.pause();
+  lbScale = 1; lbPanX = 0; lbPanY = 0;
+  lbApply(false);
+  overlay.classList.add('open');
+}
+
+function lbShowVideo(src) {
+  lbVideo.src = src;
+  lbVideo.style.display = '';
+  lbImg.style.display = 'none';
+  overlay.classList.add('open');
+}
+
 function lbClose() {
   overlay.classList.remove('open');
+  lbVideo.pause();
+  lbVideo.src = '';
   lbScale = 1; lbPanX = 0; lbPanY = 0;
   lbApply(false);
 }
@@ -117,10 +151,20 @@ window.addEventListener('mouseup', () => {
 contentEl.querySelectorAll('img').forEach(img => {
   img.style.cursor = 'zoom-in';
   img.addEventListener('click', e => {
+    const isLight = document.documentElement.classList.contains('light');
+    if (img.classList.contains('theme-img-dark')  &&  isLight) return;
+    if (img.classList.contains('theme-img-light')  && !isLight) return;
     e.stopPropagation();
-    lbImg.src = img.src;
-    lbScale = 1; lbPanX = 0; lbPanY = 0;
-    lbApply(false);
-    overlay.classList.add('open');
+    lbShowImg(img.src);
   });
+});
+
+const videoObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => e.isIntersecting ? e.target.play() : e.target.pause());
+}, { threshold: 0.1 });
+
+contentEl.querySelectorAll('video').forEach(vid => {
+  vid.style.cursor = 'zoom-in';
+  vid.addEventListener('click', e => { e.stopPropagation(); lbShowVideo(vid.src); });
+  videoObserver.observe(vid);
 });

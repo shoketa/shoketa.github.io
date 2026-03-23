@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=DM+Mono:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/style.css">
+<script>(function(){var t=localStorage.getItem('theme')||(window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');if(t==='light')document.documentElement.classList.add('light');})()</script>
 <style>
   .project-page {
     padding: 48px 36px 96px;
@@ -188,6 +189,9 @@
   @media (max-width: 680px) {
     .project-page { padding: 24px 20px 64px; }
     .project-title { font-size: 20px; }
+    .project-content table { display: block; overflow-x: auto; white-space: nowrap; }
+    .project-content td, .project-content th { white-space: normal; min-width: 140px; }
+    .project-content td img, .project-content td video { width: 100%; min-width: unset; }
   }
   #lightbox {
     display: none;
@@ -207,6 +211,13 @@
     border-radius: 4px;
     box-shadow: 0 8px 40px rgba(0,0,0,0.6);
     transform-origin: center center;
+  }
+  #lightbox-video {
+    display: none;
+    max-width: 90vw;
+    max-height: 90vh;
+    border-radius: 4px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.6);
   }
   #lightbox-close {
     position: absolute;
@@ -263,6 +274,7 @@
       </a>
     </nav>
 
+    <button id="theme-toggle" aria-label="Toggle theme"></button>
   </aside>
 
   <!-- MAIN -->
@@ -291,6 +303,7 @@
     toggle.querySelector('.hamburger').nextSibling.textContent = isOpen ? ' Close' : ' Menu';
   });
 </script>
+<script type="module" src="/theme.js"></script>
 <script type="module" src="/project-loader.js"></script>
 <script type="module" src="/sidebar-scene.js"></script>
 
