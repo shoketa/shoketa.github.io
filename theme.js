@@ -14,7 +14,6 @@ function apply(theme) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Fade the page in now that DOM is ready and theme is already set
   document.body.style.opacity = '1';
 
   apply(getPreferred());

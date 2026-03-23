@@ -1,5 +1,5 @@
 # Project Goal
-My main goal for this project was show off some VFX and to collaborate with my fellow TGA student and friend from Animation, [Sharon Chao]().
+My main goal for this project was show off some VFX and to collaborate with my fellow TGA student and friend from Animation, [Sharon Chao](https://www.youtube.com/@ludwig/videos).
 # Summary
 For this project, I made various visual effects befitting her characters aesthetic and vibe. Our Idea was to make a boss cinematic intro akin to games like Elden Ring. I made three main visual effects for this project.
 # Breakdown

@@ -4,7 +4,8 @@
 		{"id":"8f48b984c78fa542","type":"text","text":"# Intersection RT\n![[ptfl-water-rt1.png]]","x":-140,"y":-340,"width":260,"height":320},
 		{"id":"79cbbbd35631bbf7","type":"text","text":"# Interaction Blueprint\n* RT Resizing & Handling\n* Sets Domain Coords\n* Sets water plane height","x":467,"y":-340,"width":293,"height":160},
 		{"id":"a0647908dd4d5a96","type":"text","text":"# Wave RT\n![[ptfl-water-rt2.png]]","x":-147,"y":40,"width":275,"height":320},
-		{"id":"21f055daa1820321","type":"text","text":"# Water Material\n* Reads RG for normal info\n* Reads B for edge info\n* Reads A for moss mask","x":484,"y":400,"width":260,"height":160}
+		{"id":"21f055daa1820321","type":"text","text":"# Water Material\n* Reads RG for normal info\n* Reads B for edge info\n* Reads A for moss mask","x":484,"y":400,"width":260,"height":160},
+		{"id":"1aca24cf08028ced","x":872,"y":-21,"width":250,"height":60,"type":"text","text":""}
 	],
 	"edges":[
 		{"id":"8777d3dd3985cb0b","fromNode":"79cbbbd35631bbf7","fromSide":"bottom","toNode":"8f48b984c78fa542","toSide":"right","label":"Writes Data"},
