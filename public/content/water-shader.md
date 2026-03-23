@@ -25,10 +25,8 @@ Here's an overview of the entire system and how it works:
 #### Water Material
 * Reads from RT to add normals
 * Reads from RT to mask out grime and moss.
- 
- 
----
 
+---
 
 ### Niagara System Breakdown
 For the interaction system, I use two render targets, one uses the state of each object intersecting with the water plane at that frame, and the other uses the previous render target to generate normals, edge and a mask in RGBA respectively over time. The secondary render target also converts it's output as world space with domain wrapping.

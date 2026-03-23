@@ -63,6 +63,7 @@ const normalised = mdText.replace(/!\[\[([^\]|/]+?)(?:\s*\/\s*([^\]|]+?))?\s*(?:
 
 let html = marked.parse(normalised);
 videoBlocks.forEach((tag, i) => { html = html.replaceAll(`VIDPLACEHOLDER${i}`, tag); });
+html = html.replace(/<p>\s*<\/p>/g, '<div class="spacer"></div>');
 
 const contentEl = document.getElementById('project-content');
 contentEl.innerHTML = html;
