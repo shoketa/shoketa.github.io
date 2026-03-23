@@ -28,7 +28,7 @@
   <aside class="sidebar-left">
     <div id="sidebar-scene"></div>
     <div class="name">Allen Velazco</div>
-    <div class="tagline">Aspiring Technical artist</div>
+    <div class="tagline">Aspiring Technical Artist</div>
 
     <nav class="nav-section">
       <div class="nav-link active">
@@ -113,11 +113,15 @@
     toggle.classList.toggle('open', isOpen);
     toggle.querySelector('.hamburger').nextSibling.textContent = isOpen ? ' Close' : ' Menu';
   });
-  // Close sidebar when a nav link is clicked
+  // Close sidebar + smooth-scroll when a nav link is clicked
   sidebar.querySelectorAll('.nav-link, .social-link').forEach(link => {
-    link.addEventListener('click', () => {
+    link.addEventListener('click', e => {
       sidebar.classList.remove('open');
       toggle.classList.remove('open');
+      const href = link.getAttribute('href');
+      if (!href || !href.startsWith('#')) return;
+      const target = document.querySelector(href);
+      if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
     });
   });
 </script>

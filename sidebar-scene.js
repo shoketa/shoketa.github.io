@@ -140,7 +140,7 @@ export function createScene(container) {
         charMaterial.uniforms.time.value = t;
         model.rotation.z = Math.cos(t * 0.8) * 0.04;
         model.rotation.y = manualRotY + (isDragging ? 0 : Math.sin(t * 0.4) * 0.18);
-
+        model.rotation.y += t * 0.1;
         renderer.render(scene, camera);
     }
 

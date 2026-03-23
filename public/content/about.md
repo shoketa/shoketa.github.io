@@ -2,6 +2,8 @@ Heya! my name's Allen. I'm an Aspiring Technical Artist currently studying at TG
 
 My current hobbies are: Keyboards, Climbing!
 
+---
+
 ### Internship Program
 *I am part of The Game Assembly’s internship program. As per the agreement between the Games Industry*
 *and The Game Assembly, neither student nor company may be in contact with one another regarding*
