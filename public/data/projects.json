@@ -48,14 +48,6 @@
     "link": "/project.html?id=p6"
   },
   {
-    "id": "p7",
-    "title": "P7 - Undecided Game",
-    "section": "game",
-    "image": "/images/placeholder.png",
-    "gradient": "linear-gradient(135deg, #1c0e0e 0%, #4a1e1e 100%)",
-    "link": "/project.html?id=p7"
-  },
-  {
     "id": "vulkan-engine",
     "title": "Custom C++ Vulkan Engine",
     "section": "personal",

@@ -66,17 +66,18 @@ The Wave RT emitter is similar but with a few extra steps. Namely, the Grid2D Bu
 ![[ptfl-water-undo-localization.png]]
 
 Inside the draw wave module, I undo the localization set from the first render target.
+![[ptfl-water-render-targets.webm]]
+Left is Un-Localized, Right is Localized
+
+The reason for undoing the localization in the wave RT is to get the domain wrapping effect. This allows me to sample the render target simply without offsetting it constantly. It's also to help blending out when objects are out of bounds.
 
 ## Water Material Breakdown
-For the water material, I decided to create a few different layers to really sell the grimey lake water look. The water is using Unreal's Single Layer Water as a base with 2 layers on top. I am also using material attributes to streamline the process of blending multiple layers.
+For the water material, I decided to create a few different layers to really sell the grimey lake water look. The water is using Unreal's Single Layer Water as a base with 2 layers on top. I am also using material attributes to easier keep track of each layer's textures and to streamline blending them.
 
 *Overview of the Material:*
-![[ptfl-water-material-overview.png]]
+![[ptfl-water-material-showcase.png]]
 
 Since, I am using Single Layer Water, I don't have to calculate scattering, absorption, etc. myself. But I still need to handle the water normals.
-
-*Overview of water normal:*
-![[ptfl-water-normal.png]]
 
 | ![[T_Water_HF_N.jpg\|400]]    | ![[T_Water_LF_N.jpg\|400]]   |
 | ----------------------------- | ---------------------------- |
@@ -91,20 +92,12 @@ For the water normals, I created a high-frequency and a low-frequency normal tex
 *Normal Blending and RT Normal Reconstruction:*
 ![[ptfl-water-normal-blending.png]]
 
-Here, I just sample the two water normals with the UVs I created earlier then blend them together. The blend node is custom hlsl code snippet that blends the normals with correct angles using dot product. 
+Here, I just sample the two water normals with the UVs I created earlier then blend them together. The blend node is custom hlsl code snippet that blends the normals with correct angles using dot product.
 
 RT Normal Reconstruction just takes the RG channels of the Render Target and makes a normal map out of it. 
 
-
-
-
 ## If I had more time...
-Researching this topic and getting a working prototype took longer than I expected so I didn't have enough time for the water simulation that I wanted. If I had more time, I probably would've tried to do more with the interaction system, for e.g a realistic wave propagation system similar to the fluid simulation from Unreal Engine's Content Examples.
-
-
-## Sources
-- Lorem ipsum
-- Lorem ipsum
-- Lorem ipsum
-- Lorem ipsum
-- Lorem ipsum
+Researching this topic and getting a working prototype took longer than I expected so I didn't have enough time for the water simulation that I wanted. If I had more time, I probably would've tried to do more with the interaction system like:
+1.  A proper wave propagation system
+2.  Landscape integration (instead of planes)
+3.  Foliage interaction using landscape integration

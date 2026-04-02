@@ -1,0 +1,37 @@
+{
+	"nodes":[
+		{"id":"2752d2280a7a78a8","type":"text","text":"Create Texture","x":260,"y":32,"width":250,"height":60},
+		{"id":"1b744020170e203b","type":"text","text":"Copy Mesh Temporarily","x":-580,"y":-80,"width":250,"height":60},
+		{"id":"4c7c8398ffe436ae","type":"text","text":"Frame X","x":-580,"y":32,"width":250,"height":60},
+		{"id":"2291935d807e65c6","type":"text","text":"Copy Mesh Temporarily","x":-300,"y":-80,"width":250,"height":60},
+		{"id":"c4f80a69fb32b7b9","type":"text","text":"Frame X","x":-300,"y":32,"width":250,"height":60},
+		{"id":"a9530da664b3dbb9","type":"file","file":"images/ptfl-vat-capture.png","x":-584,"y":-260,"width":259,"height":159},
+		{"id":"475150fb151646a8","type":"file","file":"images/ptfl-vat-capture.png","x":-304,"y":-260,"width":259,"height":159},
+		{"id":"23a09ac55cdbb5db","type":"text","text":"Store Positions and Normals","x":-579,"y":-420,"width":250,"height":60},
+		{"id":"38606b10be32c0b7","type":"text","text":"Store Positions and Normals","x":-299,"y":-420,"width":250,"height":60},
+		{"id":"78ddc0ec06c06024","type":"text","text":"Bake Start","x":-1140,"y":32,"width":250,"height":60},
+		{"id":"36d9b1b27048f1b9","type":"text","text":"Position Vertices in Order","x":-935,"y":140,"width":400,"height":60},
+		{"id":"22314496a49b0270","type":"text","text":"Create UV Set","x":-860,"y":32,"width":250,"height":60},
+		{"id":"91874badf8a6f5ef","type":"file","file":"images/ptfl-vat-baker-frames.png","x":-935,"y":220,"width":399,"height":225},
+		{"id":"e4f54ecb7dfa3d2a","x":560,"y":32,"width":250,"height":60,"type":"text","text":"Bake End"}
+	],
+	"edges":[
+		{"id":"75d2331596abd33b","fromNode":"22314496a49b0270","fromSide":"bottom","toNode":"36d9b1b27048f1b9","toSide":"top"},
+		{"id":"bc104176044343c8","fromNode":"4c7c8398ffe436ae","fromSide":"top","toNode":"1b744020170e203b","toSide":"bottom"},
+		{"id":"1586964d66cd2419","fromNode":"36d9b1b27048f1b9","fromSide":"bottom","toNode":"91874badf8a6f5ef","toSide":"top"},
+		{"id":"67faf8956bf12c58","fromNode":"78ddc0ec06c06024","fromSide":"right","toNode":"22314496a49b0270","toSide":"left"},
+		{"id":"5b606f8e64255b1f","fromNode":"22314496a49b0270","fromSide":"right","toNode":"4c7c8398ffe436ae","toSide":"left"},
+		{"id":"37b8f72a7bbc7378","fromNode":"4c7c8398ffe436ae","fromSide":"right","toNode":"c4f80a69fb32b7b9","toSide":"left"},
+		{"id":"f946aec12e0bedf5","fromNode":"1b744020170e203b","fromSide":"top","toNode":"a9530da664b3dbb9","toSide":"bottom"},
+		{"id":"7b658e7ffe628786","fromNode":"a9530da664b3dbb9","fromSide":"top","toNode":"23a09ac55cdbb5db","toSide":"bottom"},
+		{"id":"fa90e567a8b29de1","fromNode":"2291935d807e65c6","fromSide":"top","toNode":"475150fb151646a8","toSide":"bottom"},
+		{"id":"be6f6a8241e91aa7","fromNode":"475150fb151646a8","fromSide":"top","toNode":"38606b10be32c0b7","toSide":"bottom"},
+		{"id":"ad1416fe8529e661","fromNode":"c4f80a69fb32b7b9","fromSide":"top","toNode":"2291935d807e65c6","toSide":"bottom"},
+		{"id":"67123d8a3deac1d0","fromNode":"38606b10be32c0b7","fromSide":"right","toNode":"2752d2280a7a78a8","toSide":"top","label":"Apply Position & Normals as RGB"},
+		{"id":"6f2b28891ab732ad","fromNode":"23a09ac55cdbb5db","fromSide":"right","toNode":"38606b10be32c0b7","toSide":"left"},
+		{"id":"3f509ce8a87ec0fc","fromNode":"2752d2280a7a78a8","fromSide":"right","toNode":"e4f54ecb7dfa3d2a","toSide":"left"},
+		{"id":"28e5bcc33899ceac","fromNode":"c4f80a69fb32b7b9","fromSide":"bottom","toNode":"4c7c8398ffe436ae","toSide":"bottom","label":"Loops until frame end"},
+		{"id":"36dc7588a23903ce","fromNode":"23a09ac55cdbb5db","fromSide":"top","toNode":"38606b10be32c0b7","toSide":"top"},
+		{"id":"f231a993e5064f40","fromNode":"c4f80a69fb32b7b9","fromSide":"right","toNode":"2752d2280a7a78a8","toSide":"left"}
+	]
+}

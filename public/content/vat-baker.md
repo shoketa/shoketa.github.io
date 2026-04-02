@@ -1,14 +1,21 @@
-# Project Goal
-Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.
-# Summary
-Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.
-
+![[ptfl-vat-baker.webm]]
+### Project Goal
+My main goal for this project was to create a nice way to create and export Vertex Animation Textures in Blender. This was originally an idea I got when our group was working on game project 5: Blood and Gold.
 # Breakdown
-Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.
+The tool works in 3 stages:
+#### Mesh Capture
+* Makes a copy of a given mesh in that frame
+* Captures every vertex in that frame
 
-## Sources
-- Lorem ipsum
-- Lorem ipsum
-- Lorem ipsum
-- Lorem ipsum
-- Lorem ipsum
+#### UV set
+* Saves every vertex in a new UV set
+* Orders them in a single-file line at the top of the UV
+
+#### Export Textures
+* Create a Texture
+* Apply captured values to the texture
+
+---
+
+Visualization of the Vertex Animation Texture
+![[ptfl-vat-baker-debug-showcase.webm]]
