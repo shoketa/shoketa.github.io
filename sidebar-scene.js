@@ -99,9 +99,9 @@ export function createScene(container) {
 
     // Blender Z-up → Three.js Y-up
     // model.rotation.x = -Math.PI * 0.5;
+    const introStartY = 0.5;
+    model.position.y = introStartY;
     scene.add(model);
-
-    requestAnimationFrame(() => container.classList.add('loaded'));
 
     // ── Drag to spin ──────────────────────────────────────────────────────────
 
@@ -129,11 +129,26 @@ export function createScene(container) {
 
     const clock = new THREE.Clock();
     let t = 0;
+    let introT = 0;
+    const introDuration = 2.0;
+    let introStarted = false;
+
+    function easeOutCubic(x) { return 1 - Math.pow(1 - x, 3); }
 
     function update() {
         requestAnimationFrame(update);
         const dt = Math.min(clock.getDelta(), 0.1);
         t += dt;
+
+        // Intro: fade in + slide to resting position over 2s
+        if (!introStarted) {
+            container.classList.add('loaded');
+            introStarted = true;
+        }
+        if (introT < 1) {
+            introT = Math.min(introT + dt / introDuration, 1);
+            model.position.y = introStartY * (1 - easeOutCubic(introT));
+        }
 
         if (!isDragging) { velocity *= damping; manualRotY += velocity; }
 

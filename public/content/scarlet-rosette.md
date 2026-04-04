@@ -8,13 +8,11 @@ For this project, I made various visual effects befitting her characters aesthet
 #### Effects & Tools I contributed to:
 * Mist VFX
 * Fire step VFX
-* Silk Veil Houidni Tool
+* Silk Veil Houdini Tool
 * Environment Lighting & Atmospherics.
 # Breakdown
 
-
 ### Mist VFX
-
 The mist is an environmental VFX meant to add ambiance to the character's entrance and exit. This effect is composed of three main parts:
 ####  Mist
 * Flipbook texture baked in EmberGen
@@ -32,12 +30,12 @@ The mist is an environmental VFX meant to add ambiance to the character's entran
 [Darker Mist Image]
 
 ### Fire Step VFX
-
 For this effect we wanted a cool dramatic effect for when the camera is zoomed in on the characters shoes. To go with her mysterious, phoenix-like appearance I decided to make a fire footstep effect. It's composed of two main parts:
 
 #### Fire Poof
 * Three different flame flipbooks packed in one texture, also baked in EmberGen.
 * Uses custom made flipbook material function for frame blending
+
 [Fire Poof Image]
 #### Flame Ring
  * A simple panning texture with erosion. Texture was created using Substance Designer.
@@ -46,4 +44,10 @@ For this effect we wanted a cool dramatic effect for when the camera is zoomed i
 
 
 [Secondary Ring Image]
+
+### Silk Veil Houdini Tool
+I created this tool because I felt that the scene felt empty even with nice lighting. I was mainly inspired by the veils in Elden Ring: Shadows of the Erdtree Messmer Boss and also a bit from Monster Hunter: Wilds' La La Barina.
+
+##### Inspiration
+[Messmer & La la Barina Image]
 

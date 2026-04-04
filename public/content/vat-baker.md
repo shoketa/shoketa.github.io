@@ -17,5 +17,6 @@ The tool works in 3 stages:
 
 ---
 
-Visualization of the Vertex Animation Texture
+Visualization of the Vertex Animation Texture:
 ![[ptfl-vat-baker-debug-showcase.webm]]
+Each color represents it's offset from the first frame.

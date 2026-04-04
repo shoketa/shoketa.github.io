@@ -7,13 +7,13 @@
 		{"id":"c4f80a69fb32b7b9","type":"text","text":"Frame X","x":-300,"y":32,"width":250,"height":60},
 		{"id":"a9530da664b3dbb9","type":"file","file":"images/ptfl-vat-capture.png","x":-584,"y":-260,"width":259,"height":159},
 		{"id":"475150fb151646a8","type":"file","file":"images/ptfl-vat-capture.png","x":-304,"y":-260,"width":259,"height":159},
-		{"id":"23a09ac55cdbb5db","type":"text","text":"Store Positions and Normals","x":-579,"y":-420,"width":250,"height":60},
-		{"id":"38606b10be32c0b7","type":"text","text":"Store Positions and Normals","x":-299,"y":-420,"width":250,"height":60},
+		{"id":"23a09ac55cdbb5db","type":"text","text":"Use Positions and Normals as origin point.","x":-579,"y":-420,"width":250,"height":60},
+		{"id":"38606b10be32c0b7","type":"text","text":"Store Offsets from origin","x":-299,"y":-420,"width":250,"height":60},
 		{"id":"78ddc0ec06c06024","type":"text","text":"Bake Start","x":-1140,"y":32,"width":250,"height":60},
 		{"id":"36d9b1b27048f1b9","type":"text","text":"Position Vertices in Order","x":-935,"y":140,"width":400,"height":60},
 		{"id":"22314496a49b0270","type":"text","text":"Create UV Set","x":-860,"y":32,"width":250,"height":60},
 		{"id":"91874badf8a6f5ef","type":"file","file":"images/ptfl-vat-baker-frames.png","x":-935,"y":220,"width":399,"height":225},
-		{"id":"e4f54ecb7dfa3d2a","x":560,"y":32,"width":250,"height":60,"type":"text","text":"Bake End"}
+		{"id":"e4f54ecb7dfa3d2a","type":"text","text":"Bake End","x":560,"y":32,"width":250,"height":60}
 	],
 	"edges":[
 		{"id":"75d2331596abd33b","fromNode":"22314496a49b0270","fromSide":"bottom","toNode":"36d9b1b27048f1b9","toSide":"top"},
