@@ -70,6 +70,7 @@ html = html.replace(/<a href="/g, '<a target="_blank" rel="noopener noreferrer" 
 const contentEl = document.getElementById('project-content');
 contentEl.innerHTML = html;
 
+
 // Lightbox
 const overlay = document.createElement('div');
 overlay.id = 'lightbox';

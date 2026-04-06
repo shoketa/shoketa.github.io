@@ -161,8 +161,24 @@
   .project-content table {
     border-collapse: collapse;
     width: 100%;
-    margin: 24px 0;
+    table-layout: fixed;
     font-size: 14px;
+  }
+
+  .project-content td,
+  .project-content th {
+    word-break: break-word;
+    overflow-wrap: break-word;
+    overflow: hidden;
+    max-width: 0;
+  }
+
+  .project-content td img,
+  .project-content td video {
+    max-width: 100% !important;
+    width: 100% !important;
+    height: auto !important;
+    display: block;
   }
 
   .project-content th,
@@ -189,12 +205,9 @@
     border-radius: 4px;
   }
 
-  @media (max-width: 680px) {
+  @media (max-width: 744px) {
     .project-page { padding: 24px 20px 64px; }
     .project-title { font-size: 20px; }
-    .project-content table { display: block; overflow-x: auto; white-space: nowrap; }
-    .project-content td, .project-content th { white-space: normal; min-width: 140px; }
-    .project-content td img, .project-content td video { width: 100%; min-width: unset; }
   }
   #lightbox {
     display: none;

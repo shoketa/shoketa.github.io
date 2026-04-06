@@ -1,5 +1,4 @@
 import { marked } from 'marked';
-import { createScene } from './sidebar-scene.js';
 
 /**
  * portfolio-loader.js
@@ -43,6 +42,18 @@ function buildCard(project) {
   label.className = 'project-label';
   label.textContent = project.title;
   card.appendChild(label);
+
+  // Click: fade to black then navigate
+  card.addEventListener('click', e => {
+    e.preventDefault();
+    const href = card.href;
+    const overlay = document.createElement('div');
+    overlay.style.cssText = 'position:fixed;inset:0;z-index:9999;background:var(--bg);opacity:0;transition:opacity 0.15s ease;pointer-events:none;';
+    document.body.appendChild(overlay);
+    overlay.getBoundingClientRect(); // force reflow so transition fires
+    overlay.style.opacity = '1';
+    overlay.addEventListener('transitionend', () => { window.location.href = href; }, { once: true });
+  });
 
   // Tilt effect
   const MAX_TILT = 4;
@@ -125,22 +136,3 @@ async function loadPortfolio() {
 
 loadPortfolio();
 
-// Flip card: delayed flip + lazy scene init
-const flipCard = document.querySelector('.flip-card');
-const aboutScene = document.getElementById('about-scene');
-if (flipCard && aboutScene) {
-  let flipTimer = null;
-  let sceneInited = false;
-
-  flipCard.addEventListener('mouseenter', () => {
-    flipTimer = setTimeout(() => {
-      flipCard.classList.add('flipped');
-      if (!sceneInited) { sceneInited = true; createScene(aboutScene); }
-    }, 1000);
-  });
-
-  flipCard.addEventListener('mouseleave', () => {
-    clearTimeout(flipTimer);
-    flipCard.classList.remove('flipped');
-  });
-}
