@@ -1,10 +1,4 @@
-Heya! my name's Allen. I'm an Aspiring Technical Artist currently studying at TGA Malmö. I enjoy digging into the technical side of the graphics pipeline and shader development. 
-
-My current hobbies are: Keyboards, Climbing!
-
-
-
-
+Heya! my name's Allen. I'm a Technical Artist currently studying at TGA Malmö. I enjoy digging into the technical side of the graphics pipeline and shader development. 
 ### Internship Program
 *I am part of The Game Assembly’s internship program. As per the agreement between the Games Industry*
 *and The Game Assembly, neither student nor company may be in contact with one another regarding*

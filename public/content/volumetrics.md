@@ -1,3 +1,4 @@
+##### Project Time: ~4 weeks
 # Project Goal
 This project was originally a feature I made for our game in 
 # Summary

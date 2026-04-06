@@ -64,25 +64,32 @@ if (heroFile) {
 // marked never wraps <video> in <p> tags (it doesn't treat video as block-level).
 const videoBlocks = [];
 
-// Regex captures: ![[darkFile / lightFile|width]] or ![[file|width]]
-const normalised = mdText.replace(/!\[\[([^\]|/]+?)(?:\s*\/\s*([^\]|]+?))?\s*(?:\\?\|(\d+))?\]\]/g, (_, file, lightFile, width) => {
+// Regex captures: ![[darkFile / lightFile#l|width]] or ![[file#r|width]]
+// #l = left-align, #r = right-align (default is centered)
+const normalised = mdText.replace(/!\[\[([^\]|/#]+?)(?:\s*\/\s*([^\]|#]+?))?\s*(#[lr])?\s*(?:\\?\|(\d+))?\]\]/g, (_, file, lightFile, align, width) => {
   file = file.trim().replace(/\\$/, '');
+  const alignStyle = align === '#l' ? 'margin-right:auto;margin-left:0'
+                   : align === '#r' ? 'margin-left:auto;margin-right:0'
+                   : '';
+
   if (lightFile) {
     lightFile = lightFile.trim().replace(/\\$/, '');
-    const sizeAttr = width ? ` style="width:${width}px"` : '';
-    return `<span class="theme-img-pair">`
-         + `<img src="/images/${file}" alt="${file}" class="theme-img-dark"${sizeAttr}>`
-         + `<img src="/images/${lightFile}" alt="${lightFile}" class="theme-img-light"${sizeAttr}>`
+    const wrapStyles = [width ? `width:${width}px` : '', alignStyle].filter(Boolean).join(';');
+    return `<span class="theme-img-pair"${wrapStyles ? ` style="${wrapStyles}"` : ''}>`
+         + `<img src="/images/${file}" alt="${file}" class="theme-img-dark">`
+         + `<img src="/images/${lightFile}" alt="${lightFile}" class="theme-img-light">`
          + `</span>`;
   }
+
+  const styles = [width ? `width:${width}px` : '', alignStyle].filter(Boolean).join(';');
+  const styleAttr = styles ? ` style="${styles}"` : '';
+
   if (VIDEO_EXTS.test(file)) {
-    const style = width ? ` style="width:${width}px"` : '';
-    const tag = `<video src="/videos/${file}" autoplay loop muted playsinline${style}></video>`;
+    const tag = `<video src="/videos/${file}" autoplay loop muted playsinline${styleAttr}></video>`;
     videoBlocks.push(tag);
     return `VIDPLACEHOLDER${videoBlocks.length - 1}`;
   }
-  const sizeAttr = width ? ` style="width:${width}px"` : '';
-  return `<img src="/images/${file}" alt="${file}"${sizeAttr}>`;
+  return `<img src="/images/${file}" alt="${file}"${styleAttr}>`;
 });
 
 let html = marked.parse(normalised);

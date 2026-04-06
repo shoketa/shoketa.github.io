@@ -46,6 +46,8 @@ html.light .theme-img-light { opacity: 1; pointer-events: auto; }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
+html { scroll-behavior: smooth; }
+
 body { opacity: 0; transition: opacity 0.5s ease; }
 
 body.theme-transitioning,
@@ -72,6 +74,8 @@ a { color: inherit; text-decoration: none; }
   display: grid;
   grid-template-columns: 320px 1fr;
   min-height: 100vh;
+  position: relative;
+  z-index: 1;
 }
 
 /* Page load overlay */
@@ -214,6 +218,7 @@ a { color: inherit; text-decoration: none; }
   font-family: 'Syne', sans-serif;
   font-size: 24px;
   font-weight: 600;
+  color: var(--accent);
   letter-spacing: 0.2px;
 }
 
@@ -247,6 +252,7 @@ a { color: inherit; text-decoration: none; }
 }
 
 .project-label {
+  color: var(--text-less-muted);
   position: absolute;
   bottom: 0;
   left: 0;
@@ -380,4 +386,14 @@ a { color: inherit; text-decoration: none; }
   .projects-grid { grid-template-columns: 1fr; }
 
   .main { height: auto; }
+
+  .about-body {
+    flex-direction: column;
+  }
+
+  .about-photo {
+    order: -1;
+    width: 100%;
+    height: auto;
+  }
 }

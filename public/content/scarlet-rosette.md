@@ -1,4 +1,6 @@
 #hero![[ptfl-scarlet-showcase.webm]]
+##### Project Time: 4 weeks
+
 
 This project was made in collaboration with my fellow TGA student and friend from Animation, [Sharon Chao](https://sharonchao.me). I wanted to collaborate because I thought her character looked awesome and had potential. So, I wanted to elevate the cinematic with some VFX and Environmental Effects.
 # Project Goal
