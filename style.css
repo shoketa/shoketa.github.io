@@ -37,7 +37,7 @@ html.light .theme-img-light { opacity: 1; pointer-events: auto; }
   border: none;
   color: var(--text-muted);
   cursor: pointer;
-  font-size: 16px;
+  font-size: 24px;
   padding: 0;
   text-align: left;
   transition: color 0.2s;
@@ -74,13 +74,22 @@ a { color: inherit; text-decoration: none; }
   min-height: 100vh;
 }
 
+/* Page load overlay */
+#overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: var(--bg);
+  opacity: 1;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+}
+#overlay.hidden { opacity: 0; }
+
 /* Sidebar Left */
 .sidebar-left {
   padding: 20px 28px 25px 25%;
   border-right: 1px solid var(--border);
-  opacity: 0;
-  transform: translateY(10px);
-  animation: fadeUp 0.4s ease forwards;
   position: sticky;
   top: 0;
   height: 100vh;
@@ -320,21 +329,6 @@ a { color: inherit; text-decoration: none; }
   background: var(--border);
 }
 
-/* Fade-in */
-.fade-in {
-  opacity: 0;
-  transform: translateY(10px);
-  animation: fadeUp 0.4s ease forwards;
-}
-
-@keyframes fadeUp {
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.fade-in:nth-child(1) { animation-delay: 0.05s; }
-.fade-in:nth-child(2) { animation-delay: 0.1s; }
-.fade-in:nth-child(3) { animation-delay: 0.15s; }
-.fade-in:nth-child(4) { animation-delay: 0.2s; }
 
 /* Sidebar Three.js scene */
 #sidebar-scene {

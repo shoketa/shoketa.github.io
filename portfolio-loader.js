@@ -16,11 +16,10 @@ import { createScene } from './sidebar-scene.js';
  *   link     {string}  href for the card (use "#" as placeholder)
  */
 
-function buildCard(project, delay) {
+function buildCard(project) {
   const card = document.createElement('a');
-  card.className = 'project-card fade-in';
+  card.className = 'project-card';
   card.href = project.link || '#';
-  card.style.animationDelay = `${delay}s`;
 
   if (project.image) {
     const img = document.createElement('img');
@@ -45,21 +44,11 @@ function buildCard(project, delay) {
   label.textContent = project.title;
   card.appendChild(label);
 
-  // Tilt effect — only active after fade-in completes
+  // Tilt effect
   const MAX_TILT = 4;
-  let tiltReady = false;
-
-  card.addEventListener('animationend', () => {
-    card.style.animation = 'none';
-    card.style.opacity = '1';
-    card.style.transform = 'none';
-    tiltReady = true;
-  }, { once: true });
-
   let tracking = false;
   let hovered = false;
   card.addEventListener('mouseenter', () => {
-    if (!tiltReady) return;
     hovered = true;
     tracking = false;
     card.style.zIndex = '10';
@@ -67,19 +56,18 @@ function buildCard(project, delay) {
     card.style.transform = 'perspective(700px) rotateX(0deg) rotateY(0deg) scale(1.06)';
   });
   card.addEventListener('transitionend', () => {
-    if (!tiltReady || !hovered) return;
+    if (!hovered) return;
     tracking = true;
     card.style.transition = 'none';
   });
   card.addEventListener('mousemove', e => {
-    if (!tiltReady || !tracking) return;
+    if (!tracking) return;
     const rect = card.getBoundingClientRect();
     const x = (e.clientX - rect.left) / rect.width  - 0.5;
     const y = (e.clientY - rect.top)  / rect.height - 0.5;
     card.style.transform = `perspective(700px) rotateX(${-y * MAX_TILT}deg) rotateY(${x * MAX_TILT}deg) scale(1.06)`;
   });
   card.addEventListener('mouseleave', () => {
-    if (!tiltReady) return;
     hovered = false;
     tracking = false;
     card.style.transition = 'transform 0.4s ease';
@@ -110,18 +98,18 @@ async function loadPortfolio() {
   const gameItems      = projects.filter(p => p.section === 'game');
   const personalItems  = projects.filter(p => p.section === 'personal');
 
-  portfolioItems.forEach((p, i) => {
-    portfolioGrid?.appendChild(buildCard(p, 0.1 + i * 0.05));
+  portfolioItems.forEach(p => {
+    portfolioGrid?.appendChild(buildCard(p));
   });
 
   if (gameGrid) gameGrid.style.gridTemplateColumns = 'repeat(3, 1fr)';
-  gameItems.forEach((p, i) => {
-    gameGrid?.appendChild(buildCard(p, 0.1 + i * 0.05));
+  gameItems.forEach(p => {
+    gameGrid?.appendChild(buildCard(p));
   });
 
   if (personalGrid) personalGrid.style.gridTemplateColumns = 'repeat(3, 1fr)';
-  personalItems.forEach((p, i) => {
-    personalGrid?.appendChild(buildCard(p, 0.1 + i * 0.05));
+  personalItems.forEach(p => {
+    personalGrid?.appendChild(buildCard(p));
   });
 
   const aboutEl = document.getElementById('about-content');
