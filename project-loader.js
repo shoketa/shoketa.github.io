@@ -8,7 +8,7 @@ if (!id) {
   throw new Error('No id param');
 }
 
-const [projects, mdText] = await Promise.all([
+let [projects, mdText] = await Promise.all([
   fetch('/data/projects.json').then(r => r.json()),
   fetch(`/content/${id}.md`).then(r => {
     if (!r.ok) throw new Error(`No content for "${id}"`);
@@ -22,8 +22,32 @@ const titleEl = document.getElementById('project-title');
 titleEl.textContent = project?.title ?? id;
 document.title = `${titleEl.textContent} — Allen Velazco`;
 
+const VIDEO_EXTS = /\.(mp4|webm|ogg|mov)$/i;
+
+// Extract #hero![[file]] from markdown if present
+let heroFile = null;
+const heroMatch = mdText.match(/^#hero!\[\[([^\]]+)\]\]\s*$/m);
+if (heroMatch) {
+  heroFile = heroMatch[1].trim();
+  mdText = mdText.replace(heroMatch[0], '').replace(/^\n/, '');
+}
+
 const heroSlot = document.getElementById('hero-slot');
-if (project?.image) {
+if (heroFile) {
+  if (VIDEO_EXTS.test(heroFile)) {
+    const vid = document.createElement('video');
+    vid.src = `/videos/${heroFile}`;
+    vid.autoplay = true; vid.loop = true; vid.muted = true; vid.playsInline = true;
+    vid.className = 'project-hero';
+    heroSlot.appendChild(vid);
+  } else {
+    const img = document.createElement('img');
+    img.src = `/images/${heroFile}`;
+    img.alt = project?.title ?? '';
+    img.className = 'project-hero';
+    heroSlot.appendChild(img);
+  }
+} else if (project?.image) {
   const img = document.createElement('img');
   img.src = project.image;
   img.alt = project.title;
@@ -38,7 +62,6 @@ if (project?.image) {
 
 // Convert Obsidian wiki-image/video syntax, using placeholders for videos so
 // marked never wraps <video> in <p> tags (it doesn't treat video as block-level).
-const VIDEO_EXTS = /\.(mp4|webm|ogg|mov)$/i;
 const videoBlocks = [];
 
 // Regex captures: ![[darkFile / lightFile|width]] or ![[file|width]]
@@ -104,14 +127,16 @@ function lbShowImg(src) {
 
 function lbShowVideo(src) {
   lbVideo.src = src;
-  lbVideo.style.display = '';
+  lbVideo.style.display = 'block';
   lbImg.style.display = 'none';
   overlay.classList.add('open');
+  lbVideo.play();
 }
 
 function lbClose() {
   overlay.classList.remove('open');
   lbVideo.pause();
+  lbVideo.style.display = 'none';
   lbVideo.src = '';
   lbScale = 1; lbPanX = 0; lbPanY = 0;
   lbApply(false);
@@ -169,6 +194,6 @@ const videoObserver = new IntersectionObserver((entries) => {
 
 contentEl.querySelectorAll('video').forEach(vid => {
   vid.style.cursor = 'zoom-in';
-  vid.addEventListener('click', e => { e.stopPropagation(); lbShowVideo(vid.src); });
+  vid.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); lbShowVideo(vid.src); });
   videoObserver.observe(vid);
 });

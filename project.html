@@ -16,9 +16,14 @@
   }
 
   .project-inner {
-    max-width: 865px;
+    max-width: 1038px;
     margin: 0 auto;
     scroll-behavior: smooth;
+  }
+
+  #hero-slot {
+    max-width: 1142px;
+    margin: 0 auto;
   }
 
   .back-link {
@@ -86,10 +91,10 @@
 
   .project-content img,
   .project-content video {
-    width: 100%;
+    width: 95%;
     border-radius: 6px;
     display: block;
-    margin: 24px 0;
+    margin: 24px auto;
   }
 
   .project-content ul,
@@ -304,11 +309,12 @@
       <a href="/" class="back-link fade-in">
         <span class="arrow">←</span> Back
       </a>
+    </div>
 
-      <div id="hero-slot"></div>
+    <div id="hero-slot"></div>
 
+    <div class="project-inner">
       <h1 class="project-title fade-in" id="project-title">Loading…</h1>
-
       <article class="project-content fade-in" id="project-content"></article>
     </div>
   </main>
