@@ -12,7 +12,22 @@ For this project, I made various visual effects befitting her characters aesthet
 * Environment Lighting & Atmospherics.
 # Breakdown
 
+### Silk Veil Houdini Tool
+I created this tool because I noticed that the scene felt empty even with nice lighting. I was mainly inspired by the veils in Elden Ring: Shadows of the Erdtree Messmer Boss and La La Barina from Monster Hunter: Wilds.
+
+![[ptfl-scarlet-cloth.mp4]]
+
+I first use a curve spline input to create two points where the veil will be hanging from. I then create a middle point and droop it down.
+
+![[ptfl-scarlet-cloth-houdini.mp4]]
+
+After that I assign vertex colors based on how close each points is from the middle, using that I can displace the silk using a shader. Then, I use sweep to create the geometry that will eventually be simulated using Vellum Cloth Physics. Lastly, I "bake" a frame using timestep to then be sent to output.
+
+---
+
 ### Mist VFX
+![[ptfl-scarlet-mist.mp4]]
+
 The mist is an environmental VFX meant to add ambiance to the character's entrance and exit. This effect is composed of three main parts:
 ####  Mist
 * Flipbook texture baked in EmberGen
@@ -23,13 +38,12 @@ The mist is an environmental VFX meant to add ambiance to the character's entran
 * A simple plane with aerodynamic drag
 
 [Confetti Image]
-#### Darker Mist (Poof)
-*  Also Flipbook texture baked in EmberGen
-* Bigger & Darker
 
-[Darker Mist Image]
+
+---
 
 ### Fire Step VFX
+![[ptfl-scarlet-firestep.mp4]]
 For this effect we wanted a cool dramatic effect for when the camera is zoomed in on the characters shoes. To go with her mysterious, phoenix-like appearance I decided to make a fire footstep effect. It's composed of two main parts:
 
 #### Fire Poof
@@ -39,15 +53,4 @@ For this effect we wanted a cool dramatic effect for when the camera is zoomed i
 [Fire Poof Image]
 #### Flame Ring
  * A simple panning texture with erosion. Texture was created using Substance Designer.
-
-[Flame Ring Image]
-
-
-[Secondary Ring Image]
-
-### Silk Veil Houdini Tool
-I created this tool because I felt that the scene felt empty even with nice lighting. I was mainly inspired by the veils in Elden Ring: Shadows of the Erdtree Messmer Boss and also a bit from Monster Hunter: Wilds' La La Barina.
-
-##### Inspiration
-[Messmer & La la Barina Image]
 

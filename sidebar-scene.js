@@ -59,7 +59,13 @@ const gltf = await loader.loadAsync('meshes/SM_Allen_WelcomePose.glb');
 // ── createScene ───────────────────────────────────────────────────────────────
 
 export function createScene(container) {
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    let renderer;
+    try {
+        renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    } catch (e) {
+        console.warn('[sidebar-scene] WebGL unavailable, skipping scene.', e);
+        return;
+    }
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setClearColor(0x000000, 0);
     container.appendChild(renderer.domElement);
@@ -165,4 +171,6 @@ export function createScene(container) {
 // ── Init sidebar ──────────────────────────────────────────────────────────────
 
 const sidebarContainer = document.getElementById('sidebar-scene');
-if (sidebarContainer) createScene(sidebarContainer);
+if (sidebarContainer) {
+    try { createScene(sidebarContainer); } catch (e) { console.warn('[sidebar-scene] init failed:', e); }
+}
