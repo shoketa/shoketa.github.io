@@ -6,9 +6,9 @@ This project was made in collaboration with my fellow TGA student and friend fro
 For this project, I made various visual effects befitting her characters aesthetic and vibe. Our Idea was to make a boss cinematic intro akin to games like Elden Ring.
 
 #### Effects & Tools I contributed to:
+* Silk Veil Houdini Tool
 * Mist VFX
 * Fire step VFX
-* Silk Veil Houdini Tool
 * Environment Lighting & Atmospherics.
 # Breakdown
 
@@ -32,13 +32,8 @@ The mist is an environmental VFX meant to add ambiance to the character's entran
 ####  Mist
 * Flipbook texture baked in EmberGen
 * Fade in/out
-
-[Mist Image]
 #### Confetti
 * A simple plane with aerodynamic drag
-
-[Confetti Image]
-
 
 ---
 
@@ -49,8 +44,6 @@ For this effect we wanted a cool dramatic effect for when the camera is zoomed i
 #### Fire Poof
 * Three different flame flipbooks packed in one texture, also baked in EmberGen.
 * Uses custom made flipbook material function for frame blending
-
-[Fire Poof Image]
 #### Flame Ring
  * A simple panning texture with erosion. Texture was created using Substance Designer.
 
