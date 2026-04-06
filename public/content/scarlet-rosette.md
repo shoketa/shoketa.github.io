@@ -1,8 +1,7 @@
 ![[ptfl-scarlet-showcase.webm]]
 
-# Project Goal
 This project was made in collaboration with my fellow TGA student and friend from Animation, [Sharon Chao](https://sharonchao.me). I wanted to collaborate because I thought her character looked awesome and had potential. So, I wanted to elevate the cinematic with some VFX and Environmental Effects.
-# Summary
+# Project Goal
 For this project, I made various visual effects befitting her characters aesthetic and vibe. Our Idea was to make a boss cinematic intro akin to games like Elden Ring.
 
 #### Effects & Tools I contributed to:
