@@ -98,7 +98,7 @@
 
     <!-- About Me -->
     <div class="divider" style="margin-top:8vh;"></div>
-    <section id="about" style="padding:6vh 0; scroll-margin-top:40px;">
+    <section id="about" style="padding:6vh 0 50vh; scroll-margin-top:40px;">
       <div class="section-header">
         <span class="section-title">About Me</span>
       </div>
@@ -164,6 +164,9 @@
     const target = document.querySelector(link.getAttribute('href'));
     if (target) sections.push({ el: target, link });
   });
+
+  // Sort sections by DOM order so scroll-spy picks the last one above the threshold
+  sections.sort((a, b) => a.el.compareDocumentPosition(b.el) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1);
 
   // Scroll-spy: highlight the nav link whose section is currently in view
   const allNavLinks = document.querySelector('.sidebar-left').querySelectorAll('.nav-link');

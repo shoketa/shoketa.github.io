@@ -73,14 +73,14 @@ const normalised = mdText.replace(/!\[\[([^\]|/#]+?)(?:\s*\/\s*([^\]|#]+?))?\s*(
 
   if (lightFile) {
     lightFile = lightFile.trim().replace(/\\$/, '');
-    const wrapStyles = [width ? `width:${width}px` : '', alignStyle].filter(Boolean).join(';');
+    const wrapStyles = [width ? `max-width:${width}px` : '', alignStyle].filter(Boolean).join(';');
     return `<span class="theme-img-pair"${wrapStyles ? ` style="${wrapStyles}"` : ''}>`
          + `<img src="/images/${file}" alt="${file}" class="theme-img-dark">`
          + `<img src="/images/${lightFile}" alt="${lightFile}" class="theme-img-light">`
          + `</span>`;
   }
 
-  const styles = [width ? `width:${width}px` : '', alignStyle].filter(Boolean).join(';');
+  const styles = [width ? `max-width:${width}px` : '', alignStyle].filter(Boolean).join(';');
   const styleAttr = styles ? ` style="${styles}"` : '';
 
   if (VIDEO_EXTS.test(file)) {

@@ -11,6 +11,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/cpp.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/glsl.min.js"></script>
 <script>(function(){var t=localStorage.getItem('theme')||(window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');if(t==='light')document.documentElement.classList.add('light');})()</script>
 <style>
   .project-page {
@@ -146,9 +147,43 @@
     background: var(--bg2);
     border: 1px solid var(--border);
     border-radius: 8px;
-    padding: 18px 20px;
+    padding: 10px 20px 18px;
     overflow-x: auto;
     margin: 20px 0;
+  }
+
+  .code-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+
+  .code-lang-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--text-muted);
+    opacity: 0.6;
+    pointer-events: none;
+    user-select: none;
+    text-transform: lowercase;
+  }
+
+  .code-toggle {
+    font-family: 'DM Mono', monospace;
+    font-size: 18px;
+    color: var(--text-less-muted);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    opacity: 0.5;
+    transition: opacity 0.15s;
+  }
+
+  .code-toggle:hover {
+    opacity: 1;
   }
 
   .project-content pre code {
@@ -362,7 +397,36 @@
   const _ovCheck = setInterval(() => {
     if (document.getElementById('project-content')?.innerHTML) {
       clearInterval(_ovCheck);
-      if (window.hljs) hljs.highlightAll();
+      if (window.hljs) {
+        hljs.registerAliases(['hlsl'], { languageName: 'glsl' });
+        hljs.highlightAll();
+        document.querySelectorAll('.project-content pre code[class*="language-"]').forEach(block => {
+          const pre = block.parentElement;
+          const m = block.className.match(/language-(\w+)/);
+
+          const toolbar = document.createElement('div');
+          toolbar.className = 'code-toolbar';
+
+          if (m) {
+            const label = document.createElement('span');
+            label.className = 'code-lang-label';
+            label.textContent = m[1];
+            toolbar.appendChild(label);
+          }
+
+          const toggle = document.createElement('button');
+          toggle.className = 'code-toggle';
+          toggle.textContent = '-';
+          toggle.addEventListener('click', () => {
+            const hidden = block.style.display === 'none';
+            block.style.display = hidden ? '' : 'none';
+            toggle.textContent = hidden ? '-' : '+';
+          });
+          toolbar.appendChild(toggle);
+
+          pre.insertBefore(toolbar, pre.firstChild);
+        });
+      }
       const o = document.getElementById('overlay');
       if (o) { o.classList.add('hidden'); o.addEventListener('transitionend', () => o.remove(), { once: true }); }
     }

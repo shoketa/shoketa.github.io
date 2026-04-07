@@ -1,10 +1,10 @@
-*Visualization of the Vertex Animation Texture:*
-![[ptfl-vat-baker-debug-showcase.webm]]
 ##### Project Time: 1 week
 
 # Project Goal
 My main goal for this project was to build a tool for creating and exporting Vertex Animation Textures in Blender. It was also a great learning exercise that deepened my understanding of how VATs work.
 
+*Visualization of the Vertex Animation Texture:*
+![[ptfl-vat-baker-debug-showcase.webm]]
 # Breakdown
 
 *Graph Overview:*
