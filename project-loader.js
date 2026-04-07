@@ -1,8 +1,19 @@
 import { marked } from 'marked';
 
-const id = new URLSearchParams(location.search).get('id');
+// Support clean URLs: /project/water-shader
+// On GitHub Pages, 404.html redirects to /project.html and stashes the original path.
+const redirectPath = sessionStorage.getItem('spa-redirect');
+if (redirectPath) sessionStorage.removeItem('spa-redirect');
 
-if (!id) {
+const pathname = redirectPath || location.pathname;
+const id = pathname.replace(/\/$/, '').split('/').pop();
+
+// Rewrite URL bar to clean path if we landed on /project.html
+if (id && location.pathname === '/project.html') {
+  history.replaceState(null, '', '/project/' + id);
+}
+
+if (!id || id === 'project.html') {
   document.getElementById('project-title').textContent = 'Project not found.';
   throw new Error('No id param');
 }

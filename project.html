@@ -82,6 +82,14 @@
     line-height: 1.3;
   }
 
+  .project-content h2, 
+  .project-content h3, 
+  .project-content h4, 
+  .project-content h5
+  {
+    padding: 0 5%;
+  }
+
   .project-content h1 { font-size: 20px; }
   .project-content h2 { font-size: 17px; }
   .project-content h3 { font-size: 15px; }
@@ -93,6 +101,7 @@
     font-size: 14px;
     line-height: 1.8;
     margin-bottom: 16px;
+    padding: 0 5%;
   }
 
   .project-content img,
@@ -102,18 +111,19 @@
     display: block;
     margin: 24px auto;
     -webkit-mask-image:
-      linear-gradient(to right,  transparent 0%, black 3%, black 97%, transparent 100%),
-      linear-gradient(to bottom, transparent 0%, black 3%, black 97%, transparent 100%);
+      linear-gradient(to right,  transparent 0px, black 1vw, black calc(100% - 1vw), transparent 100%),
+      linear-gradient(to bottom, transparent 0px, black 2vh, black calc(100% - 2vh), transparent 100%);
     mask-image:
-      linear-gradient(to right,  transparent 0%, black 3%, black 97%, transparent 100%),
-      linear-gradient(to bottom, transparent 0%, black 3%, black 97%, transparent 100%);
+      linear-gradient(to right,  transparent 0px, black 1vw, black calc(100% - 1vw), transparent 100%),
+      linear-gradient(to bottom, transparent 0px, black 2vh, black calc(100% - 2vh), transparent 100%);
     -webkit-mask-composite: destination-in;
     mask-composite: intersect;
   }
 
   .project-content ul,
   .project-content ol {
-    padding-left: 20px;
+    padding-left: calc(5% + 20px);
+    padding-right: 5%;
     margin-bottom: 16px;
   }
 
@@ -338,20 +348,22 @@
       </a>
     </nav>
 
-    <nav class="nav-section" id="nav-portfolio">
-      <a href="/#portfolio" class="nav-link">
-        <span class="arrow">→</span> Portfolio Pieces
-      </a>
-    </nav>
-    <nav class="nav-section" id="nav-game">
-      <a href="/#games" class="nav-link">
-        <span class="arrow">→</span> Game Projects
-      </a>
-    </nav>
-    <nav class="nav-section" id="nav-personal">
-      <a href="/#personal" class="nav-link">
-        <span class="arrow">→</span> Personal Projects
-      </a>
+    <nav class="nav-section">
+      <div id="nav-portfolio">
+        <a href="/#portfolio" class="nav-link">
+          <span class="arrow">→</span> Portfolio Pieces
+        </a>
+      </div>
+      <div id="nav-game">
+        <a href="/#games" class="nav-link">
+          <span class="arrow">→</span> Game Projects
+        </a>
+      </div>
+      <div id="nav-personal">
+        <a href="/#personal" class="nav-link">
+          <span class="arrow">→</span> Personal Projects
+        </a>
+      </div>
     </nav>
 
     <button id="theme-toggle" aria-label="Toggle theme"></button>
@@ -446,8 +458,10 @@
 <script>
   // Populate sidebar project listings
   (async () => {
-    const id = new URLSearchParams(location.search).get('id');
-    if (!id) return;
+    const redir = sessionStorage.getItem('spa-redirect');
+    const pn = redir || location.pathname;
+    const id = pn.replace(/\/$/, '').split('/').pop();
+    if (!id || id === 'project.html') return;
     try {
       const projects = await fetch('/data/projects.json').then(r => r.json());
       const current = projects.find(p => p.id === id);

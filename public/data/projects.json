@@ -5,7 +5,7 @@
     "section": "portfolio",
     "image": "/images/ptfl-water.png",
     "gradient": "linear-gradient(135deg, #1c0e0e 0%, #4a1e1e 100%)",
-    "link": "/project.html?id=water-shader"
+    "link": "/project/water-shader"
   },
   {
     "id": "vat-baker",
@@ -13,7 +13,7 @@
     "section": "portfolio",
     "image": "/images/ptfl-vatbaker.png",
     "gradient": "linear-gradient(135deg, #1c0e0e 0%, #4a1e1e 100%)",
-    "link": "/project.html?id=vat-baker"
+    "link": "/project/vat-baker"
   },
   {
     "id": "scarlet-rosette",
@@ -21,7 +21,7 @@
     "section": "portfolio",
     "image": "/images/ptfl-scarlet.png",
     "gradient": "linear-gradient(135deg, #1c0e0e 0%, #4a1e1e 100%)",
-    "link": "/project.html?id=scarlet-rosette"
+    "link": "/project/scarlet-rosette"
   },
   {
     "id": "volumetrics",
@@ -29,7 +29,7 @@
     "section": "portfolio",
     "image": "/images/ptfl-volumetric.png",
     "gradient": "linear-gradient(135deg, #1c0e0e 0%, #4a1e1e 100%)",
-    "link": "/project.html?id=volumetrics"
+    "link": "/project/volumetrics"
   },
   {
     "id": "p5",
@@ -37,7 +37,7 @@
     "section": "game",
     "image": "/images/p5-blood-and-gold.png",
     "gradient": "linear-gradient(135deg, #1c0e0e 0%, #4a1e1e 100%)",
-    "link": "/project.html?id=p5"
+    "link": "/project/p5"
   },
   {
     "id": "p6",
@@ -45,7 +45,7 @@
     "section": "game",
     "image": "/images/p6-aliens-stole-my-shit.png",
     "gradient": "linear-gradient(135deg, #1c0e0e 0%, #4a1e1e 100%)",
-    "link": "/project.html?id=p6"
+    "link": "/project/p6"
   },
   {
     "id": "vulkan-engine",
@@ -53,6 +53,6 @@
     "section": "personal",
     "image": "/images/pp-vulkan.png",
     "gradient": "linear-gradient(135deg, #0d1b3e 0%, #1a3a5c 100%)",
-    "link": "/project.html?id=vulkan-engine"
+    "link": "/project/vulkan-engine"
   }
 ]

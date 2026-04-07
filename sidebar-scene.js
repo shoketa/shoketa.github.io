@@ -51,10 +51,10 @@ void main() {
 const textureLoader = new THREE.TextureLoader();
 const loader = new GLTFLoader();
 
-const texture = await textureLoader.loadAsync('textures/chibi_diffuse.png');
+const texture = await textureLoader.loadAsync('/textures/chibi_diffuse.png');
 texture.magFilter = THREE.NearestFilter;
 
-const gltf = await loader.loadAsync('meshes/SM_Allen_WelcomePose.glb');
+const gltf = await loader.loadAsync('/meshes/SM_Allen_WelcomePose.glb');
 
 // ── createScene ───────────────────────────────────────────────────────────────
 
@@ -73,8 +73,8 @@ export function createScene(container) {
     const scene = new THREE.Scene();
 
     const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 100);
-    camera.position.set(0, 1.1, 3.8);
-    camera.lookAt(0, 0.6, 0);
+    camera.position.set(0, 1.0, 3.8);
+    camera.lookAt(0, 1.0, 0);
 
     function resize() {
         const w = container.clientWidth;
@@ -105,29 +105,44 @@ export function createScene(container) {
 
     // Blender Z-up → Three.js Y-up
     // model.rotation.x = -Math.PI * 0.5;
-    model.position.y = 0;
+    model.position.y = .2;
     scene.add(model);
 
-    // ── Drag to spin ──────────────────────────────────────────────────────────
+    // ── Drag to rotate ────────────────────────────────────────────────────────
 
     let isDragging = false;
-    let lastX = 0;
-    let manualRotY = 0;
-    let velocity = 0;
-    const damping = 0.92;
+    let lastX = 0, lastY = 0;
+    let manualRotY = 0, manualRotX = 0;
+    let velX = 0, velY = 0;
+    const damping = 0.98;
 
     const canvas = renderer.domElement;
     canvas.style.cursor = 'grab';
 
-    function onDragStart(x) { isDragging = true; lastX = x; velocity = 0; canvas.style.cursor = 'grabbing'; }
-    function onDragMove(x)  { if (!isDragging) return; const d = (x - lastX) * 0.01; manualRotY += d; velocity = d; lastX = x; }
-    function onDragEnd()    { isDragging = false; canvas.style.cursor = 'grab'; }
+    // Inject hint text
+    const hint = document.createElement('div');
+    hint.textContent = 'rotate me!';
+    hint.style.cssText = 'position:absolute;bottom:8px;left:0;right:0;font-family:"DM Mono",monospace;font-size:11px;color:var(--text-muted);opacity:0.5;text-align:center;pointer-events:none;user-select:none;transition:opacity 0.4s;';
+    container.style.position = 'relative';
+    container.appendChild(hint);
 
-    canvas.addEventListener('mousedown',  e => onDragStart(e.clientX));
-    window.addEventListener('mousemove',  e => onDragMove(e.clientX));
+    function onDragStart(x, y) { isDragging = true; lastX = x; lastY = y; velX = 0; velY = 0; canvas.style.cursor = 'grabbing'; hint.style.opacity = '0'; }
+    function onDragMove(x, y)  {
+        if (!isDragging) return;
+        velY = (x - lastX) * 0.01;
+        velX = (y - lastY) * 0.01;
+        manualRotY += velY;
+        manualRotX += velX;
+        manualRotX = Math.max(-Math.PI / 3, Math.min(Math.PI / 3, manualRotX));
+        lastX = x; lastY = y;
+    }
+    function onDragEnd() { isDragging = false; canvas.style.cursor = 'grab'; }
+
+    canvas.addEventListener('mousedown',  e => onDragStart(e.clientX, e.clientY));
+    window.addEventListener('mousemove',  e => onDragMove(e.clientX, e.clientY));
     window.addEventListener('mouseup',    () => onDragEnd());
-    canvas.addEventListener('touchstart', e => { e.preventDefault(); onDragStart(e.touches[0].clientX); }, { passive: false });
-    canvas.addEventListener('touchmove',  e => { e.preventDefault(); onDragMove(e.touches[0].clientX); },  { passive: false });
+    canvas.addEventListener('touchstart', e => { e.preventDefault(); onDragStart(e.touches[0].clientX, e.touches[0].clientY); }, { passive: false });
+    canvas.addEventListener('touchmove',  e => { e.preventDefault(); onDragMove(e.touches[0].clientX, e.touches[0].clientY); },  { passive: false });
     canvas.addEventListener('touchend',   () => onDragEnd());
 
     // ── Animation loop ────────────────────────────────────────────────────────
@@ -142,12 +157,17 @@ export function createScene(container) {
         const dt = Math.min(clock.getDelta(), 0.1);
         t += dt;
 
-        if (!isDragging) { velocity *= damping; manualRotY += velocity; }
+
+        if (!isDragging) {
+            velY *= damping;
+            manualRotY += velY;
+            manualRotX += (0 - manualRotX) * 0.06;
+        }
 
         charMaterial.uniforms.time.value = t;
         model.rotation.z = Math.cos(t * 0.8) * 0.04;
-        model.rotation.y = manualRotY + (isDragging ? 0 : Math.sin(t * 0.4) * 0.18);
-        model.rotation.y += t * 0.1;
+        model.rotation.y = manualRotY + Math.sin(t * 0.4) * 0.18 + t * 0.1;
+        model.rotation.x = manualRotX;
         renderer.render(scene, camera);
     }
 

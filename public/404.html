@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"></head>
+<body>
+<script>
+  var path = window.location.pathname;
+  if (path.startsWith('/project/')) {
+    sessionStorage.setItem('spa-redirect', path);
+    window.location.replace('/project.html');
+  } else {
+    window.location.replace('/');
+  }
+</script>
+</body>
+</html>

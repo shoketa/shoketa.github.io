@@ -64,7 +64,18 @@ async function loadPortfolio() {
   if (aboutEl) {
     try {
       const res = await fetch('/content/about.md');
-      if (res.ok) aboutEl.innerHTML = marked.parse(await res.text());
+      if (res.ok) {
+        const normalised = (await res.text()).replace(/!\[\[([^\]|/#]+?)\s*(#[lr])?\s*(?:\|(\d+))?\]\]/g, (_, file, align, width) => {
+          file = file.trim();
+          const alignStyle = align === '#l' ? 'float:left;margin:0 20px 12px 0'
+                           : align === '#r' ? 'float:right;margin:0 0 12px 20px'
+                           : '';
+          const styles = [alignStyle, width ? `max-width:${width}px` : ''].filter(Boolean).join(';');
+          const styleAttr = styles ? ` style="${styles}"` : '';
+          return `<img src="/images/${file}" alt="${file}"${styleAttr}>`;
+        });
+        aboutEl.innerHTML = marked.parse(normalised);
+      }
     } catch (_) {}
   }
 }
