@@ -8,11 +8,13 @@
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=DM+Mono:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
 <link rel="icon" href="/images/icon.png" type="image/png">
 <link rel="stylesheet" href="/style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/cpp.min.js"></script>
 <script>(function(){var t=localStorage.getItem('theme')||(window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');if(t==='light')document.documentElement.classList.add('light');})()</script>
 <style>
   .project-page {
     padding: 48px 36px 96px;
-    overflow-y: auto;
   }
 
   .project-inner {
@@ -98,6 +100,14 @@
     border-radius: 6px;
     display: block;
     margin: 24px auto;
+    -webkit-mask-image:
+      linear-gradient(to right,  transparent 0%, black 3%, black 97%, transparent 100%),
+      linear-gradient(to bottom, transparent 0%, black 3%, black 97%, transparent 100%);
+    mask-image:
+      linear-gradient(to right,  transparent 0%, black 3%, black 97%, transparent 100%),
+      linear-gradient(to bottom, transparent 0%, black 3%, black 97%, transparent 100%);
+    -webkit-mask-composite: destination-in;
+    mask-composite: intersect;
   }
 
   .project-content ul,
@@ -145,9 +155,13 @@
     background: none;
     border: none;
     padding: 0;
-    color: var(--text);
     font-size: 12px;
     line-height: 1.7;
+  }
+
+  .project-content pre code.hljs {
+    background: none;
+    padding: 0;
   }
 
   .project-content .spacer { height: 1.2em; }
@@ -156,6 +170,7 @@
     border: none;
     border-top: 1px solid var(--border);
     margin: 32px 0;
+    clear: both;
   }
 
   .project-content blockquote {
@@ -187,6 +202,8 @@
     width: 100% !important;
     height: auto !important;
     display: block;
+    -webkit-mask-image: none;
+    mask-image: none;
   }
 
   .project-content th,
@@ -286,23 +303,29 @@
       </a>
     </nav>
 
-    <nav class="nav-section">
+    <nav class="nav-section" id="nav-portfolio">
       <a href="/#portfolio" class="nav-link">
         <span class="arrow">→</span> Portfolio Pieces
       </a>
+    </nav>
+    <nav class="nav-section" id="nav-game">
       <a href="/#games" class="nav-link">
         <span class="arrow">→</span> Game Projects
       </a>
+    </nav>
+    <nav class="nav-section" id="nav-personal">
       <a href="/#personal" class="nav-link">
         <span class="arrow">→</span> Personal Projects
       </a>
     </nav>
 
-    <div style="margin-top:auto; display:flex; flex-direction:column; gap:10px;">
+    <button id="theme-toggle" aria-label="Toggle theme"></button>
+
+    <div style="margin-top:auto;">
+      <div class="sidebar-label">Socials</div>
       <a href="https://www.linkedin.com/in/allen-velazco-181236278/" target="_blank" rel="noopener" class="social-link">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.37V9h3.41v1.56h.05c.47-.9 1.63-1.85 3.36-1.85 3.59 0 4.26 2.36 4.26 5.44v6.3zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM3.56 20.45h3.55V9H3.56v11.45z"/></svg>
       </a>
-      <button id="theme-toggle" aria-label="Toggle theme"></button>
     </div>
   </aside>
 
@@ -324,13 +347,21 @@
 
 </div>
 
-<div id="overlay"></div>
+<div id="overlay">
+  <img src="/images/icon-transparent.png" class="overlay-spinner" alt="">
+</div>
 <script>
-  window.addEventListener('load', () => {
-    const o = document.getElementById('overlay');
-    o.classList.add('hidden');
-    o.addEventListener('transitionend', () => o.remove(), { once: true });
-  });
+  // Don't wait for 'load' — dismiss overlay once content is rendered by project-loader
+  const _ovCheck = setInterval(() => {
+    if (document.getElementById('project-content')?.innerHTML) {
+      clearInterval(_ovCheck);
+      if (window.hljs) hljs.highlightAll();
+      const o = document.getElementById('overlay');
+      if (o) { o.classList.add('hidden'); o.addEventListener('transitionend', () => o.remove(), { once: true }); }
+    }
+  }, 50);
+  // Fallback: dismiss after 4s no matter what
+  setTimeout(() => { clearInterval(_ovCheck); const o = document.getElementById('overlay'); if (o) { o.classList.add('hidden'); o.addEventListener('transitionend', () => o.remove(), { once: true }); } }, 4000);
 </script>
 <script>
   const toggle = document.getElementById('menuToggle');
@@ -341,9 +372,50 @@
     toggle.querySelector('.hamburger').nextSibling.textContent = isOpen ? ' Close' : ' Menu';
   });
 </script>
+<script>
+  // Populate sidebar project listings
+  (async () => {
+    const id = new URLSearchParams(location.search).get('id');
+    if (!id) return;
+    try {
+      const projects = await fetch('/data/projects.json').then(r => r.json());
+      const current = projects.find(p => p.id === id);
+      if (!current) return;
+
+      const sectionMap = { portfolio: 'nav-portfolio', game: 'nav-game', personal: 'nav-personal' };
+      const navId = sectionMap[current.section];
+      const nav = navId && document.getElementById(navId);
+      if (nav) {
+        nav.querySelector('.nav-link').classList.add('active');
+        projects.filter(p => p.section === current.section).forEach(p => {
+          const link = document.createElement('a');
+          link.href = p.link;
+          link.className = 'nav-sublink' + (p.id === id ? ' nav-sublink-active' : '');
+          link.innerHTML = '<span class="sub-arrow">⬑</span> ' + p.title;
+          nav.appendChild(link);
+        });
+      }
+
+      document.title = (current.title || id) + ' — Allen Velazco';
+    } catch (_) {}
+  })();
+</script>
 <script type="module" src="/theme.js"></script>
 <script type="module" src="/project-loader.js"></script>
 <script type="module" src="/sidebar-scene.js"></script>
+<script type="module">
+  import { smoothScrollToEl } from '/smooth-scroll.js';
+  document.querySelector('.sidebar-left').querySelectorAll('.nav-link').forEach(link => {
+    link.addEventListener('click', e => {
+      const href = link.getAttribute('href');
+      if (!href || !href.startsWith('#')) return;
+      const target = document.querySelector(href);
+      if (!target) return;
+      e.preventDefault();
+      smoothScrollToEl(null, target, 40);
+    });
+  });
+</script>
 
 </body>
 </html>

@@ -1,6 +1,5 @@
 import { marked } from 'marked';
 
-
 const id = new URLSearchParams(location.search).get('id');
 
 if (!id) {
@@ -68,8 +67,8 @@ const videoBlocks = [];
 // #l = left-align, #r = right-align (default is centered)
 const normalised = mdText.replace(/!\[\[([^\]|/#]+?)(?:\s*\/\s*([^\]|#]+?))?\s*(#[lr])?\s*(?:\\?\|(\d+))?\]\]/g, (_, file, lightFile, align, width) => {
   file = file.trim().replace(/\\$/, '');
-  const alignStyle = align === '#l' ? 'margin-right:auto;margin-left:0'
-                   : align === '#r' ? 'margin-left:auto;margin-right:0'
+  const alignStyle = align === '#l' ? 'float:left;margin:0 20px 12px 0'
+                   : align === '#r' ? 'float:right;margin:0 0 12px 20px'
                    : '';
 
   if (lightFile) {

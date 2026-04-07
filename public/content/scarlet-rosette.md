@@ -1,38 +1,41 @@
 #hero![[ptfl-scarlet-showcase.webm]]
 ##### Project Time: 4 weeks
 
+I made this project in collaboration with my fellow TGA student and friend from Animation, [Sharon Chao](https://sharonchao.me). I thought her character looked awesome and had a lot of potential, so I offered to elevate the cinematic with VFX and environmental effects.
 
-This project was made in collaboration with my fellow TGA student and friend from Animation, [Sharon Chao](https://sharonchao.me). I wanted to collaborate because I thought her character looked awesome and had potential. So, I wanted to elevate the cinematic with some VFX and Environmental Effects.
 # Project Goal
-For this project, I made various visual effects befitting her characters aesthetic and vibe. Our Idea was to make a boss cinematic intro akin to games like Elden Ring.
+Our idea was to create a boss cinematic intro akin to games like Elden Ring. I made various visual effects befitting her character's aesthetic and vibe.
 
-#### Effects & Tools I contributed to:
+#### Effects & Tools I Contributed:
 * Silk Veil Houdini Tool
 * Mist VFX
-* Fire step VFX
-* Environment Lighting & Atmospherics.
+* Fire Step VFX
+* Environment Lighting & Atmospherics
+
 # Breakdown
 
 ### Silk Veil Houdini Tool
-I created this tool because I noticed that the scene felt empty even with nice lighting. I was mainly inspired by the veils in Elden Ring: Shadows of the Erdtree Messmer Boss and La La Barina from Monster Hunter: Wilds.
+I created this tool because the scene felt empty even with nice lighting. I was mainly inspired by the veils in Elden Ring: Shadow of the Erdtree's Messmer boss and La La Barina from Monster Hunter: Wilds.
 
 ![[ptfl-scarlet-cloth.mp4]]
 
-I first use a curve spline input to create two points where the veil will be hanging from. I then create a middle point and droop it down.
+I first use a curve spline input to define two anchor points where the veil hangs from, then create a middle point and droop it downward.
 
 ![[ptfl-scarlet-cloth-houdini.mp4]]
 
-After that I assign vertex colors based on how close each points is from the middle, using that I can displace the silk using a shader. Then, I use sweep to create the geometry that will eventually be simulated using Vellum Cloth Physics. Lastly, I "bake" a frame using timestep to then be sent to output.
+After that, I assign vertex colors based on each point's proximity to the middle. This lets me displace the silk in a shader. I then use sweep to generate the geometry, which gets simulated using Vellum Cloth Physics. Lastly, I "bake" a frame using timestep and send it to output.
 
 ---
 
 ### Mist VFX
 ![[ptfl-scarlet-mist.mp4]]
 
-The mist is an environmental VFX meant to add ambiance to the character's entrance and exit. This effect is composed of three main parts:
-####  Mist
+The mist is an environmental VFX that adds ambiance to the character's entrance and exit. It's composed of two main parts:
+
+#### Mist
 * Flipbook texture baked in EmberGen
 * Fade in/out
+
 #### Confetti
 * A simple plane with aerodynamic drag
 
@@ -40,11 +43,12 @@ The mist is an environmental VFX meant to add ambiance to the character's entran
 
 ### Fire Step VFX
 ![[ptfl-scarlet-firestep.mp4]]
-For this effect we wanted a cool dramatic effect for when the camera is zoomed in on the characters shoes. To go with her mysterious, phoenix-like appearance I decided to make a fire footstep effect. It's composed of two main parts:
+
+For this effect, we wanted a dramatic close-up look for when the camera zooms in on the character's shoes. To match her mysterious, phoenix-like appearance, I made a fire footstep effect. It's composed of two main parts:
 
 #### Fire Poof
-* Three different flame flipbooks packed in one texture, also baked in EmberGen.
-* Uses custom made flipbook material function for frame blending
-#### Flame Ring
- * A simple panning texture with erosion. Texture was created using Substance Designer.
+* Three different flame flipbooks packed in one texture, also baked in EmberGen
+* Uses custom-made flipbook material function for frame blending
 
+#### Flame Ring
+* A simple panning texture with erosion, created in Substance Designer
