@@ -1,21 +1,5 @@
 import { marked } from 'marked';
 
-const toWebp = src => src.replace(/\.(png|jpe?g)$/i, '.webp');
-
-function makePicture(src, alt, className) {
-  const pic = document.createElement('picture');
-  const source = document.createElement('source');
-  source.srcset = toWebp(src);
-  source.type = 'image/webp';
-  const img = document.createElement('img');
-  img.src = src;
-  img.alt = alt;
-  if (className) img.className = className;
-  pic.appendChild(source);
-  pic.appendChild(img);
-  return pic;
-}
-
 const id = new URLSearchParams(location.search).get('id');
 
 if (!id) {
@@ -56,12 +40,18 @@ if (heroFile) {
     vid.className = 'project-hero';
     heroSlot.appendChild(vid);
   } else {
-    const pic = makePicture(`/images/${heroFile}`, project?.title ?? '', 'project-hero');
-    heroSlot.appendChild(pic);
+    const img = document.createElement('img');
+    img.src = `/images/${heroFile}`;
+    img.alt = project?.title ?? '';
+    img.className = 'project-hero';
+    heroSlot.appendChild(img);
   }
 } else if (project?.image) {
-  const pic = makePicture(project.image, project.title, 'project-hero fade-in');
-  heroSlot.appendChild(pic);
+  const img = document.createElement('img');
+  img.src = project.image;
+  img.alt = project.title;
+  img.className = 'project-hero fade-in';
+  heroSlot.appendChild(img);
 } else if (project?.gradient) {
   const div = document.createElement('div');
   div.className = 'project-hero-placeholder fade-in';
@@ -85,8 +75,8 @@ const normalised = mdText.replace(/!\[\[([^\]|/#]+?)(?:\s*\/\s*([^\]|#]+?))?\s*(
     lightFile = lightFile.trim().replace(/\\$/, '');
     const wrapStyles = [width ? `width:${width}px` : '', alignStyle].filter(Boolean).join(';');
     return `<span class="theme-img-pair"${wrapStyles ? ` style="${wrapStyles}"` : ''}>`
-         + `<picture><source srcset="/images/${toWebp(file)}" type="image/webp"><img src="/images/${file}" alt="${file}" class="theme-img-dark"></picture>`
-         + `<picture><source srcset="/images/${toWebp(lightFile)}" type="image/webp"><img src="/images/${lightFile}" alt="${lightFile}" class="theme-img-light"></picture>`
+         + `<img src="/images/${file}" alt="${file}" class="theme-img-dark">`
+         + `<img src="/images/${lightFile}" alt="${lightFile}" class="theme-img-light">`
          + `</span>`;
   }
 
@@ -98,7 +88,7 @@ const normalised = mdText.replace(/!\[\[([^\]|/#]+?)(?:\s*\/\s*([^\]|#]+?))?\s*(
     videoBlocks.push(tag);
     return `VIDPLACEHOLDER${videoBlocks.length - 1}`;
   }
-  return `<picture><source srcset="/images/${toWebp(file)}" type="image/webp"><img src="/images/${file}" alt="${file}"${styleAttr}></picture>`;
+  return `<img src="/images/${file}" alt="${file}"${styleAttr}>`;
 });
 
 let html = marked.parse(normalised);
