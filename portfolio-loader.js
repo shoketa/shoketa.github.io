@@ -1,15 +1,23 @@
 import { marked } from 'marked';
 
+const toWebp = src => src.replace(/\.(png|jpe?g)$/i, '.webp');
+
 function buildCard(project) {
   const card = document.createElement('a');
   card.className = 'project-card';
   card.href = project.link || '#';
 
   if (project.image) {
+    const pic = document.createElement('picture');
+    const source = document.createElement('source');
+    source.srcset = toWebp(project.image);
+    source.type = 'image/webp';
     const img = document.createElement('img');
     img.src = project.image;
     img.alt = project.title;
-    card.appendChild(img);
+    pic.appendChild(source);
+    pic.appendChild(img);
+    card.appendChild(pic);
   } else {
     const bg = document.createElement('div');
     bg.style.cssText = `position:absolute;inset:0;background:${project.gradient || '#1a1a1a'}`;
