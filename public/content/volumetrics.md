@@ -1,7 +1,7 @@
 #hero![[ptfl-volumetric.png]]
 ##### Project Time: ~6 weeks
 
-A fully compute-shaded volumetric renderer inside our custom C++ engine. This was originally a feature for [P6: Aliens Stole My Sh**](/project.html?id=p6), but I ended up putting enough effort into it that I decided to keep it as its own portfolio piece.
+A fully compute-shaded volumetric renderer inside our custom C++ engine. This was originally a feature for [P6: Aliens Stole My Sh**](/project/p6), but I ended up putting enough effort into it that I decided to keep it as its own portfolio piece.
 
 # Project Goal
 This project started as raymarched clouds for our game, which is set on a planet with floating islands. It eventually evolved into a full volumetric renderer with support for up to 8 box volumes that other disciplines can place in the level.
