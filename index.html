@@ -123,6 +123,11 @@
     o.classList.add('hidden');
     o.addEventListener('transitionend', () => o.remove(), { once: true });
   });
+  window.addEventListener('pageshow', e => {
+    if (e.persisted) {
+      document.querySelectorAll('[data-nav-overlay]').forEach(el => el.remove());
+    }
+  });
 </script>
 <script>
   const toggle = document.getElementById('menuToggle');

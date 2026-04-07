@@ -24,6 +24,7 @@ function buildCard(project) {
   card.addEventListener('click', e => {
     e.preventDefault();
     const ov = document.createElement('div');
+    ov.dataset.navOverlay = '1';
     ov.style.cssText = 'position:fixed;inset:0;z-index:9999;background:var(--bg);opacity:0;transition:opacity 0.4s ease;pointer-events:none;display:flex;align-items:center;justify-content:center;';
     const spinner = document.createElement('img');
     spinner.src = '/images/icon-transparent.png';
