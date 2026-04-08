@@ -133,7 +133,7 @@ export function createScene(container) {
         velX = (y - lastY) * 0.01;
         manualRotY += velY;
         manualRotX += velX;
-        manualRotX = Math.max(-Math.PI / 3, Math.min(Math.PI / 3, manualRotX));
+        manualRotX = Math.max(-Math.PI * 0.333, Math.min(Math.PI * .333, manualRotX));
         lastX = x; lastY = y;
     }
     function onDragEnd() { isDragging = false; canvas.style.cursor = 'grab'; }
@@ -161,7 +161,7 @@ export function createScene(container) {
         if (!isDragging) {
             velY *= damping;
             manualRotY += velY;
-            manualRotX += (0 - manualRotX) * 0.06;
+            manualRotX += (0 - manualRotX) * 0.02;
         }
 
         charMaterial.uniforms.time.value = t;
