@@ -56,7 +56,6 @@ async function loadPortfolio() {
 
   for (const [section, grid] of Object.entries(grids)) {
     if (!grid) continue;
-    if (section !== 'portfolio') grid.style.gridTemplateColumns = 'repeat(2, 1fr)';
     projects.filter(p => p.section === section).forEach(p => grid.appendChild(buildCard(p)));
   }
 

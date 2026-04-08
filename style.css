@@ -1,6 +1,6 @@
 :root {
-  --bg: #111111;
-  --bg2: #1a1a1a;
+  --bg: #1e1e1e;
+  --bg2: #222222;
   --text: #e8e4df;
   --text-muted: #838383;
   --text-less-muted: #a7a7a7;
@@ -13,8 +13,10 @@ html.light {
   --bg: #f2f0ec;
   --bg2: #e8e5e0;
   --text: #1a1a1a;
-  --text-muted: #888;
-  --text-less-muted: #555;
+  --text-muted: #666666;
+  --text-less-muted: #3b3b3b;
+  --accent: #16aacf;
+  --h-accent: #1897b7;
   --border: #d0cdc8;
 }
 
@@ -81,7 +83,7 @@ a { color: inherit; text-decoration: none; }
 #overlay {
   position: fixed;
   inset: 0;
-  z-index: 9999;
+  z-index: 6769;
   background: var(--bg);
   opacity: 1;
   transition: opacity 0.5s ease;
@@ -93,10 +95,10 @@ a { color: inherit; text-decoration: none; }
 #overlay.hidden { opacity: 0; }
 
 .overlay-spinner {
-  width: 48px;
-  height: 48px;
+  width: 64px;
+  height: 64px;
   animation: spin 1.2s linear infinite;
-  opacity: 0.4;
+  opacity: 0.5;
 }
 
 @keyframes spin {
@@ -397,6 +399,7 @@ a { color: inherit; text-decoration: none; }
     top: 0;
     z-index: 100;
     background: var(--bg);
+    color: var(--accent);
   }
 
   .mobile-name {
@@ -405,6 +408,22 @@ a { color: inherit; text-decoration: none; }
     font-weight: 700;
     letter-spacing: -0.3px;
   }
+
+  .project-label {
+    position: absolute;
+    z-index: 3;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 40px 16px 14px;
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    letter-spacing: 0.1px;
+    color: #fff;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+  }
+
 
   .menu-toggle {
     background: none;
