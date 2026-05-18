@@ -70,9 +70,11 @@ if (heroFile) {
   heroSlot.appendChild(div);
 }
 
+const showTgaLogo = project?.section === 'portfolio' || project?.section === 'game';
+
 // Add TGA logo overlay to hero media
 const heroMedia = heroSlot.querySelector('.project-hero');
-if (heroMedia) {
+if (showTgaLogo && heroMedia) {
   const wrap = document.createElement('div');
   wrap.className = 'media-with-logo hero-logo-wrap';
   heroSlot.insertBefore(wrap, heroMedia);
@@ -125,7 +127,7 @@ const contentEl = document.getElementById('project-content');
 contentEl.innerHTML = html;
 
 // Add TGA logo overlay to each project image / video (skip theme-pair siblings)
-contentEl.querySelectorAll('img, video').forEach(media => {
+if (showTgaLogo) contentEl.querySelectorAll('img, video').forEach(media => {
   if (media.closest('.media-with-logo')) return;
   const parentPair = media.closest('.theme-img-pair');
   const target = parentPair || media;
