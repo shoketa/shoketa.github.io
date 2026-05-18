@@ -16,6 +16,14 @@ function buildCard(project) {
     card.appendChild(bg);
   }
 
+  if (project.section === 'portfolio' || project.section === 'game') {
+    const logo = document.createElement('img');
+    logo.src = '/images/tgalogo-notext-w.png';
+    logo.alt = 'TGA';
+    logo.className = 'project-card-logo';
+    card.appendChild(logo);
+  }
+
   const label = document.createElement('div');
   label.className = 'project-label';
   label.textContent = project.title;

@@ -70,6 +70,20 @@ if (heroFile) {
   heroSlot.appendChild(div);
 }
 
+// Add TGA logo overlay to hero media
+const heroMedia = heroSlot.querySelector('.project-hero');
+if (heroMedia) {
+  const wrap = document.createElement('div');
+  wrap.className = 'media-with-logo hero-logo-wrap';
+  heroSlot.insertBefore(wrap, heroMedia);
+  wrap.appendChild(heroMedia);
+  const logo = document.createElement('img');
+  logo.src = '/images/tgalogo-notext-w.png';
+  logo.alt = 'TGA';
+  logo.className = 'media-logo-overlay';
+  wrap.appendChild(logo);
+}
+
 // Convert Obsidian wiki-image/video syntax, using placeholders for videos so
 // marked never wraps <video> in <p> tags (it doesn't treat video as block-level).
 const videoBlocks = [];
@@ -109,6 +123,26 @@ html = html.replace(/<a href="/g, '<a target="_blank" rel="noopener noreferrer" 
 
 const contentEl = document.getElementById('project-content');
 contentEl.innerHTML = html;
+
+// Add TGA logo overlay to each project image / video (skip theme-pair siblings)
+contentEl.querySelectorAll('img, video').forEach(media => {
+  if (media.closest('.media-with-logo')) return;
+  const parentPair = media.closest('.theme-img-pair');
+  const target = parentPair || media;
+  const wrap = document.createElement('span');
+  wrap.className = 'media-with-logo';
+  if (target.getAttribute('style')) {
+    wrap.setAttribute('style', target.getAttribute('style'));
+    target.removeAttribute('style');
+  }
+  target.parentNode.insertBefore(wrap, target);
+  wrap.appendChild(target);
+  const logo = document.createElement('img');
+  logo.src = '/images/tgalogo-notext-w.png';
+  logo.alt = 'TGA';
+  logo.className = 'media-logo-overlay';
+  wrap.appendChild(logo);
+});
 
 
 // Lightbox

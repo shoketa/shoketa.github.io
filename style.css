@@ -301,6 +301,21 @@ a { color: inherit; text-decoration: none; }
   transition: transform 1s cubic-bezier(0.25, 0.1, 0.25, 1), box-shadow 1s cubic-bezier(0.25, 0.1, 0.25, 1);
 }
 
+.project-card img.project-card-logo {
+  position: absolute;
+  inset: auto;
+  top: 8px ;
+  right: 8px ;
+  left: auto;
+  bottom: auto;
+  width: 25%;
+  height: auto;
+  object-fit: contain;
+  z-index: 5;
+  pointer-events: none;
+  filter: drop-shadow(0 1px 3px rgba(0,0,0,0.7));
+}
+
 .project-card:hover {
   transform: translateY(-6px) scale(1.02);
   box-shadow: 0 12px 32px rgba(0,0,0,0.4);
@@ -501,4 +516,37 @@ a { color: inherit; text-decoration: none; }
     width: 100%;
     height: auto;
   }
+}
+
+/* TGA logo overlay on project page media */
+.media-with-logo {
+  position: relative;
+  display: inline-block;
+  line-height: 0;
+}
+.hero-logo-wrap {
+  display: block;
+  margin-bottom: 36px;
+}
+.hero-logo-wrap > .project-hero {
+  margin-bottom: 0;
+}
+.media-with-logo > .media-logo-overlay {
+  position: absolute;
+  top: 6%;
+  right: -3%;
+  width: 15%;
+  height: auto;
+  margin: 0;
+  border-radius: 0;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 0.5s ease;
+  -webkit-mask-image: none;
+  mask-image: none;
+  filter: drop-shadow(0 1px 3px rgba(0,0,0,0.6));
+}
+.media-with-logo:hover > .media-logo-overlay {
+  opacity: 0;
 }
