@@ -8,7 +8,6 @@ export const profile = {
 	links: [
 		{ label: 'E-Mail', href: 'mailto:allenvelazco@hotmail.com' },
 		{ label: 'LinkedIn', href: 'https://www.linkedin.com/' },
-		{ label: 'Old Portfolio', href: 'https://allen.velazco.se/' },
 	],
 };
 
