@@ -2,7 +2,7 @@
 title: Volumetrics
 year: '2025'
 summary: A compute-shader volumetric renderer for clouds and placeable fog volumes, raymarched at half resolution.
-tags: [hlsl, c++, compute, rendering]
+tags: [hlsl, c++, compute, rendering, shaders]
 poster: /media/ptfl-volumetric.png
 order: 4
 ---

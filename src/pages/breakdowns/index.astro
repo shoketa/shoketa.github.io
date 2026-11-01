@@ -7,6 +7,19 @@ import ProjectRow from '../../components/ProjectRow.astro';
 const projects = (await getCollection('projects')).sort(
 	(a, b) => b.data.year.localeCompare(a.data.year) || a.data.order - b.data.order
 );
+
+// Each project lists once: the tag shared by the most remaining projects takes them, until none are left.
+const groups: { tag: string; projects: typeof projects }[] = [];
+let remaining = projects.filter((p) => p.data.tags.length > 0);
+while (remaining.length > 0) {
+	const counts = new Map<string, number>();
+	for (const tag of remaining.flatMap((p) => p.data.tags)) counts.set(tag, (counts.get(tag) ?? 0) + 1);
+	const [tag] = [...counts].sort((a, b) => b[1] - a[1])[0];
+	groups.push({ tag, projects: remaining.filter((p) => p.data.tags.includes(tag)) });
+	remaining = remaining.filter((p) => !p.data.tags.includes(tag));
+}
+const untagged = projects.filter((p) => p.data.tags.length === 0);
+if (untagged.length > 0) groups.push({ tag: 'other', projects: untagged });
 ---
 
 <BaseLayout title="Breakdowns" description="Technical breakdowns of shader, rendering and tools work.">
@@ -14,8 +27,16 @@ const projects = (await getCollection('projects')).sort(
 		<h1>Breakdowns</h1>
 		<p class="small">How each project works: the technique, the graphs, the code.</p>
 	</div>
-	<Divider title="All" />
-	{projects.map((p) => <ProjectRow project={p} />)}
+	{
+		groups.map((g) => (
+			<>
+				<Divider title={g.tag[0].toUpperCase() + g.tag.slice(1)} />
+				{g.projects.map((p) => (
+					<ProjectRow project={p} />
+				))}
+			</>
+		))
+	}
 </BaseLayout>
 
 <style>

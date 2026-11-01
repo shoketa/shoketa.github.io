@@ -5,7 +5,8 @@ summary: A grimy lake-water material driven by Niagara render targets that rippl
 tags: [unreal, niagara, hlsl]
 video: /media/ptfl-water-rt-showcase.webm
 poster: /media/ptfl-water.png
-order: 2
+featured: true
+order: 3
 ---
 
 Project time: ~4 weeks

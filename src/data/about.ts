@@ -2,6 +2,10 @@
 
 export const profile = {
 	name: 'Allen Velazco',
+	// Shown on hover. Spelled by sound, A-le-n Be-la-s-ko, with virama marks on the final consonants.
+	nameBaybayin: 'ᜀᜎᜒᜈ᜔ ᜊᜒᜎᜐ᜔ᜃᜓ',
+	// First syllable of each name: A, Be.
+	initialsBaybayin: 'ᜀᜊᜒ',
 	role: 'Junior Technical Artist',
 	// Put the photo at public/portrait.jpg, then set this to '/portrait.jpg'.
 	portrait: undefined as string | undefined,

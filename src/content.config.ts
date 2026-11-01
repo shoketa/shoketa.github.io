@@ -15,6 +15,8 @@ const projects = defineCollection({
 		video: z.string().optional(),
 		poster: z.string().optional(),
 		order: z.number().default(0),
+		// Featured projects list under :: projects. :: breakdowns lists everything.
+		featured: z.boolean().default(false),
 	}),
 });
 

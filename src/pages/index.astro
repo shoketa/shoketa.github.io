@@ -7,7 +7,7 @@ import NoiseField from '../components/NoiseField.astro';
 import ProjectRow from '../components/ProjectRow.astro';
 import { profile, resume } from '../data/about';
 
-const projects = (await getCollection('projects')).sort(
+const projects = (await getCollection('projects', (p) => p.data.featured)).sort(
 	(a, b) => b.data.year.localeCompare(a.data.year) || a.data.order - b.data.order
 );
 ---
@@ -17,7 +17,12 @@ const projects = (await getCollection('projects')).sort(
 		<div class="intro">
 			<CharacterScene />
 			<div>
-				<h1 id="about-title">{profile.name}</h1>
+				<h1 id="about-title">
+					<span class="baybayin-swap">
+						<span class="latin">{profile.name}</span>
+						<span class="baybayin" lang="tl" aria-hidden="true">{profile.nameBaybayin}</span>
+					</span>
+				</h1>
 				<p class="small">{profile.role}</p>
 				<p class="small links">
 					{
@@ -64,6 +69,7 @@ const projects = (await getCollection('projects')).sort(
 	<section id="projects" aria-labelledby="projects-title">
 		<Divider title="Projects" id="projects-title" />
 		{projects.map((p) => <ProjectRow project={p} />)}
+		<a class="more" href="/breakdowns/"><span aria-hidden="true">::</span> more projects</a>
 	</section>
 </BaseLayout>
 
@@ -96,6 +102,22 @@ const projects = (await getCollection('projects')).sort(
 
 	#projects :global(.divider) {
 		margin-top: 3rem;
+	}
+
+	/* Same outline as the theme toggle. */
+	.more {
+		display: inline-block;
+		margin: 1.5rem 0 3rem;
+		padding: 0.5rem 1rem;
+		border: 1px solid var(--border);
+		border-radius: 0.375rem;
+		color: var(--fg);
+		text-decoration: none;
+	}
+
+	.more:hover {
+		border-color: var(--accent-text);
+		color: var(--accent-text);
 	}
 
 	.intro {

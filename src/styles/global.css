@@ -141,6 +141,38 @@ video {
 	max-width: 100%;
 }
 
+/* Latin text that turns to Baybayin on hover; BaseLayout adds the decode. Both share a cell, so the size holds and the font is loaded before the first hover. */
+.baybayin-swap {
+	display: inline-grid;
+}
+
+.baybayin-swap > * {
+	grid-area: 1 / 1;
+	white-space: nowrap;
+}
+
+.baybayin {
+	font-family: 'Noto Sans Tagalog', sans-serif;
+	font-weight: 400;
+	letter-spacing: 0;
+	opacity: 0;
+}
+
+.baybayin-swap:hover .latin {
+	opacity: 0;
+}
+
+.baybayin-swap:hover .baybayin {
+	opacity: 1;
+}
+
+/* Theme switch crossfade, started from ThemeToggle. */
+::view-transition-old(root),
+::view-transition-new(root) {
+	animation-duration: 0.35s;
+	animation-timing-function: ease-out;
+}
+
 /* Code blocks from Shiki: follow the active theme. */
 .astro-code {
 	padding: 1rem;

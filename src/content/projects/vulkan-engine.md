@@ -1,11 +1,12 @@
 ---
 title: Vulkan Engine (WIP)
-year: '2026'
+year: '2025'
 summary: A custom C++ Vulkan graphics engine with deferred rendering, compute and basic lighting. Work in progress.
 tags: [c++, vulkan, rendering]
 video: /media/pp-deferred-engine.webm
 poster: /media/pp-vulkan.png
-order: 1
+featured: true
+order: 2
 ---
 
 This page is WIP. Here, I'll show progress of my custom C++ Vulkan graphics engine.

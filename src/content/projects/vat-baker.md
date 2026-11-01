@@ -5,6 +5,7 @@ summary: A Blender tool that bakes and exports Vertex Animation Textures, plus t
 tags: [blender, python, unreal, tools]
 video: /media/ptfl-vat-baker-debug-showcase.webm
 poster: /media/ptfl-vatbaker.png
+featured: true
 order: 5
 ---
 

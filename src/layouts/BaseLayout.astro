@@ -1,7 +1,9 @@
 ---
 import '@fontsource-variable/geist-mono/wght.css';
+import '@fontsource/noto-sans-tagalog/400.css';
 import '../styles/global.css';
 import ThemeToggle from '../components/ThemeToggle.astro';
+import { profile } from '../data/about';
 
 interface Props {
 	title: string;
@@ -25,8 +27,8 @@ const onBreakdowns = Astro.url.pathname.startsWith('/breakdowns');
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="description" content={description} />
 		<meta name="generator" content={Astro.generator} />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
+		<link rel="icon" type="image/svg+xml" href="/icon-transparent.png" />
+		<link rel="icon" href="/icon-transparent.png" />
 		<title>{title}</title>
 		<!-- Apply a saved theme before first paint so there's no flash of the wrong one. -->
 		<script is:inline>
@@ -39,7 +41,12 @@ const onBreakdowns = Astro.url.pathname.startsWith('/breakdowns');
 	<body>
 		<header class="topbar">
 			<div class="wrap bar">
-				<a class="mark" href="/" aria-label="AV, home">AV</a>
+				<a class="mark" href="/" aria-label="AV, home">
+					<span class="baybayin-swap">
+						<span class="latin">AV</span>
+						<span class="baybayin" lang="tl" aria-hidden="true">{profile.initialsBaybayin}</span>
+					</span>
+				</a>
 				<nav aria-label="Chapters">
 					<ul>
 						{
@@ -64,6 +71,72 @@ const onBreakdowns = Astro.url.pathname.startsWith('/breakdowns');
 		<main class="wrap">
 			<slot />
 		</main>
+
+		<!-- Decode text left to right on hover: links, and .baybayin-swap both ways. Skipped for reduced motion. -->
+		<script>
+			const DURATION_MS = 500;
+			const FRAME_MS = 45;
+			const BAYBAYIN = [...'ᜀᜁᜂᜃᜄᜅᜆᜇᜈᜉᜊᜋᜌᜎᜏᜐᜑ'];
+			const BLOCKS = ['░', '▒', '▓'];
+
+			// One entry per visible character, so vowel marks stay on their consonant.
+			const split = (text: string) => text.match(/\P{M}\p{M}*/gu) ?? [];
+			const pick = (pool: string[]) => pool[Math.floor(Math.random() * pool.length)];
+
+			// Runs until the text is resolved. Returns a function that cancels it.
+			const decode = (write: (text: string) => void, text: string, pool: string[]) => {
+				const chars = split(text);
+				const start = performance.now();
+				let timer = 0;
+				const tick = () => {
+					const resolved = Math.floor(((performance.now() - start) / DURATION_MS) * chars.length);
+					write(chars.map((c, i) => (i < resolved || !c.trim() ? c : pick(pool))).join(''));
+					if (resolved < chars.length) timer = window.setTimeout(tick, FRAME_MS);
+				};
+				tick();
+				return () => clearTimeout(timer);
+			};
+
+			if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+				// The media link is hidden from assistive tech and holds no text; decorative :: marks stay put.
+				for (const link of document.querySelectorAll('nav a, main a:not(.media)')) {
+					const walker = document.createTreeWalker(link, NodeFilter.SHOW_TEXT);
+					const nodes: Text[] = [];
+					while (walker.nextNode()) {
+						const node = walker.currentNode as Text;
+						if (node.data.trim() && !node.parentElement?.closest('[aria-hidden]')) nodes.push(node);
+					}
+					const texts = nodes.map((node) => node.data);
+					let stops: (() => void)[] = [];
+
+					// Project rows hover as a whole, so the title decodes from anywhere in the row.
+					(link.closest('.row') ?? link).addEventListener('mouseenter', () => {
+						stops.forEach((stop) => stop());
+						stops = nodes.map((node, i) => decode((text) => (node.data = text), texts[i], BLOCKS));
+					});
+				}
+
+				for (const swap of document.querySelectorAll('.baybayin-swap')) {
+					const latin = swap.querySelector<HTMLElement>('.latin');
+					const baybayin = swap.querySelector<HTMLElement>('.baybayin');
+					if (!latin || !baybayin) continue;
+
+					const latinText = latin.textContent ?? '';
+					const baybayinText = baybayin.textContent ?? '';
+					let stop = () => {};
+
+					const run = (el: HTMLElement, text: string, pool: string[]) => {
+						stop();
+						latin.textContent = latinText;
+						baybayin.textContent = baybayinText;
+						stop = decode((scrambled) => (el.textContent = scrambled), text, pool);
+					};
+
+					swap.addEventListener('mouseenter', () => run(baybayin, baybayinText, BAYBAYIN));
+					swap.addEventListener('mouseleave', () => run(latin, latinText, BLOCKS));
+				}
+			}
+		</script>
 
 		<!-- Play clips marked data-autoplay only while on screen. Reduced motion gets controls instead. -->
 		<script>

@@ -5,7 +5,8 @@ summary: VFX, a Houdini silk-veil tool and atmospherics for a boss-intro cinemat
 tags: [unreal, vfx, houdini, embergen]
 video: /media/ptfl-scarlet-showcase.webm
 poster: /media/ptfl-scarlet.png
-order: 3
+featured: true
+order: 1
 ---
 
 Project time: ~4 weeks

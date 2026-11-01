@@ -23,13 +23,22 @@
 		const sync = () =>
 			button.setAttribute('aria-label', `Switch to ${isDark() ? 'light' : 'dark'} theme`);
 
-		sync();
-		button.addEventListener('click', () => {
+		const toggle = () => {
 			root.dataset.theme = isDark() ? 'light' : 'dark';
 			try {
 				localStorage.setItem('theme', root.dataset.theme);
 			} catch {}
 			sync();
+		};
+
+		sync();
+		button.addEventListener('click', () => {
+			// Crossfade the whole page, so canvases and swapped images fade along with the colours.
+			if (document.startViewTransition && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+				document.startViewTransition(toggle);
+			} else {
+				toggle();
+			}
 		});
 	})();
 </script>
