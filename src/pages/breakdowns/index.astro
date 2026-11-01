@@ -1,0 +1,31 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Divider from '../../components/Divider.astro';
+import ProjectRow from '../../components/ProjectRow.astro';
+
+const projects = (await getCollection('projects')).sort(
+	(a, b) => b.data.year.localeCompare(a.data.year) || a.data.order - b.data.order
+);
+---
+
+<BaseLayout title="Breakdowns" description="Technical breakdowns of shader, rendering and tools work.">
+	<div class="head">
+		<h1>Breakdowns</h1>
+		<p class="small">How each project works: the technique, the graphs, the code.</p>
+	</div>
+	<Divider title="All" />
+	{projects.map((p) => <ProjectRow project={p} />)}
+</BaseLayout>
+
+<style>
+	.head {
+		padding-top: 3rem;
+	}
+
+	h1 {
+		margin: 0 0 0.5rem;
+		font-size: clamp(1.75rem, 4vw, 2.75rem);
+		letter-spacing: -0.03em;
+	}
+</style>

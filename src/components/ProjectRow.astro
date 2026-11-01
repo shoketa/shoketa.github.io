@@ -1,0 +1,124 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+	project: CollectionEntry<'projects'>;
+}
+
+const { project } = Astro.props;
+const { title, year, summary, tags, video, poster } = project.data;
+const href = `/breakdowns/${project.id}/`;
+---
+
+<article class="row">
+	<small class="meta">{year}</small>
+	<div class="body">
+		<h3><a href={href}>{title}</a></h3>
+		<p>{summary}</p>
+		{tags.length > 0 && <small>{tags.join(' ░ ')}</small>}
+	</div>
+	<a class="media" href={href} tabindex="-1" aria-hidden="true">
+		{
+			video ? (
+				<video src={video} poster={poster} muted loop playsinline preload="none" data-autoplay />
+			) : poster ? (
+				<img src={poster} alt="" loading="lazy" decoding="async" />
+			) : (
+				<span class="empty">clip</span>
+			)
+		}
+	</a>
+</article>
+
+<style>
+	.row {
+		display: grid;
+		grid-template-columns: 9rem 1fr 18rem;
+		gap: 1.5rem;
+		padding: 1.5rem 0;
+		border-top: 1px solid var(--border);
+	}
+
+	.meta {
+		padding-top: 0.15rem;
+	}
+
+	h3 {
+		margin: 0 0 0.5rem;
+		font-size: 1rem;
+	}
+
+	h3 a {
+		color: var(--accent);
+		text-decoration: none;
+	}
+
+	h3 a {
+		transition: color 0.2s;
+	}
+
+	/* The whole row acts as the hover target, not just the title link. */
+	.row:hover h3 a,
+	.row:focus-within h3 a {
+		color: var(--fg);
+	}
+
+	p {
+		margin: 0 0 0.5rem;
+		max-width: 52ch;
+		color: var(--muted);
+	}
+
+	.media {
+		display: block;
+		text-decoration: none;
+		aspect-ratio: 16 / 9;
+		background: var(--surface);
+		overflow: hidden;
+	}
+
+	.media video,
+	.media img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		transition: scale 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+
+	/* Zoom the poster within its clipped frame while the row is hovered or focused. */
+	.row:hover .media :is(video, img),
+	.row:focus-within .media :is(video, img) {
+		scale: 1.08;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.media video,
+		.media img {
+			transition: none;
+		}
+
+		.row:hover .media :is(video, img),
+		.row:focus-within .media :is(video, img) {
+			scale: none;
+		}
+	}
+
+	.empty {
+		display: grid;
+		place-items: center;
+		height: 100%;
+		font-size: 0.8125rem;
+		color: var(--muted);
+	}
+
+	@media (max-width: 48rem) {
+		.row {
+			grid-template-columns: 1fr;
+			gap: 0.75rem;
+		}
+
+		.media {
+			order: -1;
+		}
+	}
+</style>

@@ -1,0 +1,220 @@
+---
+import '@fontsource-variable/geist-mono/wght.css';
+import '../styles/global.css';
+import ThemeToggle from '../components/ThemeToggle.astro';
+
+interface Props {
+	title: string;
+	description?: string;
+}
+
+const { title, description = 'Technical artist portfolio: shaders, rendering, tools and pipeline.' } = Astro.props;
+
+const chapters = [
+	{ label: 'about', href: '/#about', id: 'about' },
+	{ label: 'projects', href: '/#projects', id: 'projects' },
+	{ label: 'breakdowns', href: '/breakdowns/', id: 'breakdowns' },
+];
+const onBreakdowns = Astro.url.pathname.startsWith('/breakdowns');
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="description" content={description} />
+		<meta name="generator" content={Astro.generator} />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" href="/favicon.ico" />
+		<title>{title}</title>
+		<!-- Apply a saved theme before first paint so there's no flash of the wrong one. -->
+		<script is:inline>
+			try {
+				const theme = localStorage.getItem('theme');
+				if (theme === 'light' || theme === 'dark') document.documentElement.dataset.theme = theme;
+			} catch {}
+		</script>
+	</head>
+	<body>
+		<header class="topbar">
+			<div class="wrap bar">
+				<a class="mark" href="/" aria-label="AV, home">AV</a>
+				<nav aria-label="Chapters">
+					<ul>
+						{
+							chapters.map((c) => (
+								<li>
+									<a
+										href={c.href}
+										data-chapter={c.id}
+										aria-current={c.id === 'breakdowns' && onBreakdowns ? 'page' : undefined}
+									>
+										<span aria-hidden="true">::</span> {c.label}
+									</a>
+								</li>
+							))
+						}
+					</ul>
+				</nav>
+				<ThemeToggle />
+			</div>
+		</header>
+		<slot name="before-main" />
+		<main class="wrap">
+			<slot />
+		</main>
+
+		<!-- Play clips marked data-autoplay only while on screen. Reduced motion gets controls instead. -->
+		<script>
+			const clips = document.querySelectorAll<HTMLVideoElement>('video[data-autoplay]');
+			if (matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) {
+				clips.forEach((v) => (v.controls = true));
+			} else {
+				const observer = new IntersectionObserver(
+					(entries) => {
+						for (const { target, isIntersecting } of entries) {
+							const v = target as HTMLVideoElement;
+							isIntersecting ? v.play().catch(() => {}) : v.pause();
+						}
+					},
+					{ threshold: 0.25 }
+				);
+				clips.forEach((v) => observer.observe(v));
+			}
+		</script>
+
+		<!-- Smooth scrolling, including chapter links. Skipped for reduced motion. -->
+		<script>
+			import Lenis from 'lenis';
+			import 'lenis/dist/lenis.css';
+
+			// Anchors clear the sticky header via scroll-padding, which both Lenis and native jumps
+			// respect. Measured, because the header wraps to two rows on phones.
+			const header = document.querySelector<HTMLElement>('.topbar');
+			if (header) {
+				const syncPadding = () =>
+					document.documentElement.style.setProperty('scroll-padding-top', `${header.offsetHeight}px`);
+				syncPadding();
+				new ResizeObserver(syncPadding).observe(header);
+			}
+
+			if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+				const lenis = new Lenis({ autoRaf: true });
+
+				document.querySelectorAll<HTMLAnchorElement>('a[href*="#"]').forEach((link) => {
+					link.addEventListener('click', (event) => {
+						const url = new URL(link.href);
+						if (url.pathname !== location.pathname) return;
+						const target = document.getElementById(decodeURIComponent(url.hash.slice(1)));
+						if (!target) return;
+						event.preventDefault();
+						lenis.scrollTo(target);
+						history.pushState(null, '', url.hash);
+					});
+				});
+			}
+		</script>
+
+		<!-- Mark the chapter currently in view. Only runs where chapter sections exist. -->
+		<script is:inline>
+			(() => {
+				const sections = document.querySelectorAll('main section[id]');
+				if (!sections.length || !('IntersectionObserver' in window)) return;
+				const links = document.querySelectorAll('nav a[data-chapter]');
+				const observer = new IntersectionObserver(
+					(entries) => {
+						for (const entry of entries) {
+							if (!entry.isIntersecting) continue;
+							links.forEach((a) =>
+								a.dataset.chapter === entry.target.id
+									? a.setAttribute('aria-current', 'location')
+									: a.removeAttribute('aria-current')
+							);
+						}
+					},
+					{ rootMargin: '-40% 0px -55% 0px' }
+				);
+				sections.forEach((s) => observer.observe(s));
+			})();
+		</script>
+	</body>
+</html>
+
+<style>
+	.topbar {
+		position: sticky;
+		top: 0;
+		z-index: 10;
+		background: var(--bg);
+		/* border-bottom: 1px solid var(--border); */
+	}
+
+	.bar {
+		display: flex;
+		align-items: center;
+		gap: 1.5rem;
+		height: 3.5rem;
+	}
+
+	.mark {
+		font-weight: 700;
+		font-size: 1.125rem;
+		letter-spacing: 0.02em;
+		color: var(--fg);
+		text-decoration: none;
+	}
+
+	nav {
+		margin-left: auto;
+	}
+
+	ul {
+		display: flex;
+		gap: 1.25rem;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	nav a {
+		color: var(--muted);
+		text-decoration: none;
+		white-space: nowrap;
+	}
+
+	nav a:hover {
+		color: var(--fg);
+	}
+
+	nav a[aria-current] {
+		color: var(--fg);
+		box-shadow: inset 0 -2px var(--accent);
+	}
+
+	nav a span {
+		color: var(--accent-text);
+	}
+
+	/* Phones: nav drops to its own row under AV and the toggle. */
+	@media (max-width: 36rem) {
+		.bar {
+			flex-wrap: wrap;
+			justify-content: space-between;
+			height: auto;
+			row-gap: 0.25rem;
+			padding-top: 0.5rem;
+			padding-bottom: 0.5rem;
+		}
+
+		nav {
+			order: 3;
+			width: 100%;
+			margin-left: 0;
+		}
+
+		ul {
+			justify-content: space-between;
+		}
+	}
+</style>

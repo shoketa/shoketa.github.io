@@ -1,0 +1,150 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CharacterScene from '../components/CharacterScene.astro';
+import Divider from '../components/Divider.astro';
+import NoiseField from '../components/NoiseField.astro';
+import ProjectRow from '../components/ProjectRow.astro';
+import { profile, resume } from '../data/about';
+
+const projects = (await getCollection('projects')).sort(
+	(a, b) => b.data.year.localeCompare(a.data.year) || a.data.order - b.data.order
+);
+---
+
+<BaseLayout title={`${profile.name}: ${profile.role}`}>
+	<section id="about" aria-labelledby="about-title">
+		<div class="intro">
+			<CharacterScene />
+			<div>
+				<h1 id="about-title">{profile.name}</h1>
+				<p class="small">{profile.role}</p>
+				<p class="small links">
+					{
+						profile.links.map((l, i) => (
+							<>
+								{i > 0 && <span aria-hidden="true"> ░ </span>}
+								<a href={l.href}>{l.label}</a>
+							</>
+						))
+					}
+				</p>
+			</div>
+		</div>
+
+		<div class="bio">
+			<p>
+				Heya! my name's Allen. I'm a Technical Artist currently in an internship at Massive Entertainment. I enjoy digging into the technical side of the graphics pipeline and shader development. 
+			</p>
+			<p>
+				Currently learning guitar, music production and dangerously addicted to Deadlock :)
+			</p>
+		</div>
+
+		<Divider title="Résumé" />
+		<ol class="resume">
+			{
+				resume.map((r) => (
+					<li>
+						<small>{r.period}</small>
+						<p>
+							{r.role} @ <a href={r.href}>{r.org}</a>
+						</p>
+					</li>
+				))
+			}
+		</ol>
+	</section>
+
+	<!-- One screen of empty space keeps projects out of view, so :: projects reads as its own page. -->
+	<div class="page-gap" aria-hidden="true">
+		<NoiseField />
+	</div>
+
+	<section id="projects" aria-labelledby="projects-title">
+		<Divider title="Projects" id="projects-title" />
+		{projects.map((p) => <ProjectRow project={p} />)}
+	</section>
+</BaseLayout>
+
+<style>
+	#about {
+		padding-top: 3rem;
+	}
+
+	/* Full bleed: break out of the .wrap column to span the viewport. */
+	.page-gap {
+		width: 100vw;
+		margin-inline: calc(50% - 50vw);
+		display: flex;
+		/* The field rests at the bottom of the gap, just above the projects divider. */
+		align-items: flex-end;
+		height: 61vh;
+		height: 61dvh;
+	}
+
+	/* Ride the bottom of the screen while the gap is in view, then settle at its resting place. */
+	.page-gap :global(.noise-field) {
+		position: sticky;
+		bottom: 0;
+	}
+
+	/* At least a full screen tall, so the jump always lands with projects at the top. */
+	#projects {
+		min-height: calc(100dvh - 3.5rem);
+	}
+
+	#projects :global(.divider) {
+		margin-top: 3rem;
+	}
+
+	.intro {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: flex-end;
+		gap: 1.5rem 2rem;
+	}
+
+	h1 {
+		margin: 0 0 0.25rem;
+		font-size: clamp(1.75rem, 4vw, 2.75rem);
+		letter-spacing: -0.03em;
+	}
+
+	.intro p {
+		margin: 0.25rem 0;
+	}
+
+	.links a {
+		color: var(--fg);
+	}
+
+	.bio {
+		margin-top: 2.5rem;
+		max-width: 72ch;
+	}
+
+	.resume {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	.resume li {
+		display: grid;
+		grid-template-columns: 9rem 1fr;
+		gap: 1.5rem;
+		padding: 0.5rem 0;
+	}
+
+	.resume p {
+		margin: 0;
+	}
+
+	@media (max-width: 30rem) {
+		.resume li {
+			grid-template-columns: 1fr;
+			gap: 0;
+		}
+	}
+</style>

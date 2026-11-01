@@ -1,0 +1,164 @@
+/*
+ * Theme tokens. Hue is taken from the brand accent #bd9b1a (oklch hue 92.2),
+ * so neutrals carry a faint warmth instead of flat gray.
+ *
+ * --accent       brand gold for fills, highlights, selection.
+ *                Only 2.56:1 on the light canvas, so never use it as text there.
+ * --accent-text  links, focus rings, accent text. AA on canvas and surface.
+ * --on-accent    text placed on an --accent fill.
+ * --sky          dusty blue for the noise-field clouds; near-complement of the gold.
+ * --terrain      olive sage for the noise-field terrain; sits next to the gold on the wheel.
+ *                Both keep --muted's lightness and low chroma so the field stays quiet.
+ */
+:root {
+	color-scheme: light;
+	--bg: oklch(98.5% 0.006 92.2);
+	--surface: oklch(96% 0.01 92.2);
+	--border: oklch(88% 0.018 92.2);
+	--fg: oklch(22% 0.018 92.2);
+	--muted: oklch(48% 0.022 92.2);
+	--accent: #dfb212;
+	--accent-hover: oklch(76.992% 0.15409 92.325);
+	--accent-text: oklch(50% 0.11 92.2);
+	--on-accent: oklch(20% 0.03 92.2);
+	--sky: oklch(60% 0.055 240);
+	--terrain: oklch(52% 0.065 125);
+}
+
+@media (prefers-color-scheme: dark) {
+	:root:not([data-theme='light']) {
+		color-scheme: dark;
+		--bg: oklch(24.394% 0.0019 286.048);
+		--surface: oklch(21% 0.012 92.2);
+		--border: oklch(31% 0.016 92.2);
+		--fg: oklch(93% 0.01 92.2);
+		--muted: oklch(72% 0.02 92.2);
+		--accent-hover: oklch(76% 0.13 92.2);
+		--accent-text: #bd9b1a;
+		--sky: oklch(72% 0.015 240);
+		--terrain: oklch(72% 0.02 92.2);
+	}
+}
+
+:root[data-theme='dark'] {
+	color-scheme: dark;
+	--bg: oklch(24.394% 0.0019 286.048);
+	--surface: oklch(21% 0.012 92.2);
+	--border: oklch(31% 0.016 92.2);
+	--fg: oklch(93% 0.01 92.2);
+	--muted: oklch(72% 0.02 92.2);
+	--accent-hover: oklch(76% 0.13 92.2);
+	--accent-text: #bd9b1a;
+	--sky: oklch(72% 0.01 182.2);
+	/* --terrain: oklch(68% 0.02 125); */
+	--terrain: oklch(72% 0.02 92.2);
+}
+
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+/* Everything is sized in rem, so this one value scales the whole site (100% = browser default). */
+html {
+	font-size: 85%;
+	scrollbar-color: var(--border) var(--bg);
+	/* Keeps anchored sections clear of the sticky header (Lenis handles this itself when active). */
+	scroll-padding-top: 3.5rem;
+	-webkit-text-size-adjust: 100%;
+}
+
+body {
+	margin: 0;
+	font-family: 'Geist Mono Variable', ui-monospace, monospace;
+	font-size: 0.9375rem;
+	line-height: 1.5;
+	font-variant-numeric: tabular-nums;
+	background: var(--bg);
+	color: var(--fg);
+	caret-color: var(--accent-text);
+}
+
+/* Full-bleed sections use 100vw, which includes the scrollbar; clip the overflow it leaves. */
+body {
+	overflow-x: clip;
+}
+
+/* Shared column: 16px gutters on phones, generous on desktop. */
+.wrap {
+	width: 100%;
+	max-width: 68rem;
+	margin: 0 auto;
+	padding: 0 1rem;
+}
+
+@media (min-width: 48rem) {
+	.wrap {
+		padding: 0 2.5rem;
+	}
+}
+
+::selection {
+	background: var(--accent);
+	color: var(--on-accent);
+}
+
+:focus-visible {
+	outline: 2px solid var(--accent-text);
+	outline-offset: 2px;
+}
+
+a {
+	color: var(--accent-text);
+	text-underline-offset: 0.25em;
+	text-decoration-thickness: 1px;
+}
+
+a:hover {
+	text-decoration-thickness: 2px;
+}
+
+small,
+.small {
+	font-size: 0.8125rem;
+	color: var(--muted);
+}
+
+h1,
+h2,
+h3 {
+	font-weight: 600;
+	line-height: 1.2;
+	letter-spacing: -0.01em;
+	text-wrap: balance;
+}
+
+img,
+video {
+	display: block;
+	max-width: 100%;
+}
+
+/* Code blocks from Shiki: follow the active theme. */
+.astro-code {
+	padding: 1rem;
+	border: 1px solid var(--border);
+	font-size: 0.8125rem;
+	overflow-x: auto;
+}
+
+:root[data-theme='dark'] .astro-code,
+:root[data-theme='dark'] .astro-code span {
+	color: var(--shiki-dark) !important;
+	background-color: var(--shiki-dark-bg) !important;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root:not([data-theme='light']) .astro-code,
+	:root:not([data-theme='light']) .astro-code span {
+		color: var(--shiki-dark) !important;
+		background-color: var(--shiki-dark-bg) !important;
+	}
+}

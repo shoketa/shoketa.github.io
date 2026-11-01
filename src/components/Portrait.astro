@@ -1,0 +1,60 @@
+---
+// Portrait with a gold/ink halftone screen printed over it (two rotated dot layers, CSS only).
+interface Props {
+	src?: string;
+	alt: string;
+}
+
+const { src, alt } = Astro.props;
+---
+
+<figure class:list={['portrait', { screened: src }]}>
+	{src ? <img src={src} alt={alt} width="480" height="480" fetchpriority="high" /> : <div class="empty">add public/portrait.jpg</div>}
+</figure>
+
+<style>
+	.portrait {
+		position: relative;
+		width: min(16rem, 60vw);
+		aspect-ratio: 1;
+		margin: 0;
+		overflow: hidden;
+		background: var(--surface);
+	}
+
+	img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		filter: grayscale(1) contrast(1.1);
+	}
+
+	.empty {
+		display: grid;
+		place-items: center;
+		height: 100%;
+		font-size: 0.8125rem;
+		color: var(--muted);
+	}
+
+	/* Halftone screen, only over a real photo. */
+	.screened::before,
+	.screened::after {
+		content: '';
+		position: absolute;
+		inset: -50%;
+		pointer-events: none;
+		mix-blend-mode: multiply;
+		background-size: 4px 4px;
+	}
+
+	.screened::before {
+		background-image: radial-gradient(circle, oklch(70% 0.14 92.2 / 0.55) 0.6px, transparent 1px);
+		transform: rotate(15deg);
+	}
+
+	.screened::after {
+		background-image: radial-gradient(circle, oklch(22% 0.018 92.2 / 0.35) 0.5px, transparent 0.9px);
+		transform: rotate(75deg);
+	}
+</style>

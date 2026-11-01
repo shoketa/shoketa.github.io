@@ -1,0 +1,67 @@
+---
+interface Props {
+	title: string;
+	id?: string;
+}
+
+const { title, id } = Astro.props;
+const quadrants = Array.from({ length: 3 }, (_, i) => String.fromCodePoint(0x2591 + i));
+const fill = Array.from({ length: 200 }, () => quadrants[Math.floor(Math.random() * quadrants.length)]).join('');
+---
+
+<div class="divider">
+	<h2 id={id}>{title}</h2>
+	<span class="fill" aria-hidden="true">{fill}</span>
+</div>
+
+<!-- Reshuffle the fill at a jittery 5–15 fps while on screen; hold still for reduced motion. -->
+<script>
+	const GLYPHS = ['░', '▒', '▓'];
+	const FPS = 1;
+
+
+	if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+		for (const fill of document.querySelectorAll<HTMLElement>('.divider .fill')) {
+			const length = fill.textContent?.length ?? 0;
+			let timer = 0;
+
+			const tick = () => {
+				let out = '';
+				for (let i = 0; i < length; i++) out += GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
+				fill.textContent = out;
+				timer = window.setTimeout(tick, 1000 / FPS);
+			};
+
+			new IntersectionObserver(([entry]) => {
+				clearTimeout(timer);
+				if (entry.isIntersecting) tick();
+			}).observe(fill);
+		}
+	}
+</script>
+
+<style>
+	.divider {
+		display: flex;
+		align-items: baseline;
+		gap: 1ch;
+		margin: 4rem 0 1.5rem;
+	}
+
+	h2 {
+		margin: 0;
+		font-size: 0.9375rem;
+		flex-shrink: 0;
+		color: var(--muted);
+
+	}
+
+	.fill {
+		flex: 1;
+		overflow: hidden;
+		white-space: nowrap;
+		color: var(--muted);
+		user-select: none;
+	}
+
+</style>

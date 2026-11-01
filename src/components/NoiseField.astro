@@ -1,0 +1,249 @@
+---
+// Drifting 2D Perlin clouds over a strip of terrain, drawn with the divider's shade glyphs (U+2591–U+2593).
+// The clouds animate in the browser; the terrain is generated once at build time.
+
+const TERRAIN_ROWS = 4;
+// Wide enough for any screen; the overflow is clipped.
+const TERRAIN_COLS = 480;
+
+// Smoothed 1D value noise for the skyline: random knots, cosine-interpolated.
+function valueNoise1D(length: number, spacing: number) {
+	const knots = Array.from({ length: Math.ceil(length / spacing) + 2 }, () => Math.random());
+	return (x: number) => {
+		const i = Math.floor(x / spacing);
+		const t = (1 - Math.cos(((x / spacing) % 1) * Math.PI)) / 2;
+		return knots[i] + (knots[i + 1] - knots[i]) * t;
+	};
+}
+
+const broad = valueNoise1D(TERRAIN_COLS, 24);
+const detail = valueNoise1D(TERRAIN_COLS, 6);
+// Column heights in rows, between ~0.5 and TERRAIN_ROWS. Contrast pushes values apart into hills and valleys.
+const heights = Array.from({ length: TERRAIN_COLS }, (_, c) => {
+	const v = broad(c) * 0.75 + detail(c) * 0.25;
+	const contrasted = Math.min(1, Math.max(0, (v - 0.5) * 1.8 + 0.5));
+	return 0.5 + contrasted * (TERRAIN_ROWS - 0.5);
+});
+
+// Fill each column from the bottom; the partial top cell gets a lighter shade.
+const terrain = Array.from({ length: TERRAIN_ROWS }, (_, r) => {
+	const level = TERRAIN_ROWS - 1 - r;
+	return heights
+		.map((h) => {
+			const fill = h - level;
+			if (fill >= 1) return '▓';
+			if (fill > 0.66) return '▒';
+			if (fill > 0.33) return '░';
+			return ' ';
+		})
+		.join('');
+}).join('\n');
+---
+
+<div class="noise-field" aria-hidden="true">
+	<pre class="clouds"></pre>
+	<pre class="terrain">{terrain}</pre>
+</div>
+
+<script>
+	// Blank first so thin cloud falls back to empty sky.
+	const GLYPHS = [' ', '░', '▒', '▓'];
+	const FPS = 12;
+	// Columns are scaled by the glyph aspect, then stretched so clouds read wide.
+	const STRETCH = 0.45;
+	// fBm values below COVERAGE are open sky; GAIN sets how quickly clouds thicken.
+	const COVERAGE = 0.08;
+	const GAIN = 2;
+	const OCTAVES = 4;
+	// Wispy fBm layers. scale: noise units per row (smaller = bigger clouds). speed: drift in noise
+	// units per second. offset: shifts the noise so layers don't share shapes. maxGlyph caps density.
+	// Where clouds overlap, the denser glyph wins.
+	const LAYERS = [{ scale: 0.2, speed: 0.09, offset: 0, maxGlyph: 2 }];
+	// Big cumulus layer: a flat base with domed, billowy tops built from a per-column height.
+	const CUMULUS = {
+		// Noise units per row-width of x; smaller = wider clouds.
+		scale: 0.07,
+		speed: 0.01,
+		offset: 113.7,
+		// Noise above `threshold` becomes cloud; `peak` is the value that reaches full height.
+		threshold: 0.05,
+		peak: 0.3,
+		// Tallest dome as a fraction of the cloud area's rows.
+		height: 0.45,
+		// Small bumps riding on the dome for cauliflower tops: frequency multiplier and strength.
+		billowFreq: 3.5,
+		billow: 0.8,
+	};
+
+	// 2D Perlin noise, roughly in [-0.7, 0.7].
+	const perm = new Uint8Array(512);
+	{
+		const p = Array.from({ length: 256 }, (_, i) => i);
+		for (let i = 255; i > 0; i--) {
+			const j = Math.floor(Math.random() * (i + 1));
+			[p[i], p[j]] = [p[j], p[i]];
+		}
+		for (let i = 0; i < 512; i++) perm[i] = p[i & 255];
+	}
+
+	const fade = (t: number) => t * t * t * (t * (t * 6 - 15) + 10);
+	const lerp = (a: number, b: number, t: number) => a + t * (b - a);
+
+	function grad(hash: number, x: number, y: number) {
+		const h = hash & 7;
+		const u = h < 4 ? x : y;
+		const v = h < 4 ? y : x;
+		return ((h & 1) === 0 ? u : -u) + ((h & 2) === 0 ? v : -v) * 0.5;
+	}
+
+	function perlin(x: number, y: number) {
+		const X = Math.floor(x) & 255;
+		const Y = Math.floor(y) & 255;
+		x -= Math.floor(x);
+		y -= Math.floor(y);
+		const u = fade(x);
+		const v = fade(y);
+		const A = perm[X] + Y;
+		const B = perm[X + 1] + Y;
+		return lerp(
+			lerp(grad(perm[A], x, y), grad(perm[B], x - 1, y), u),
+			lerp(grad(perm[A + 1], x, y - 1), grad(perm[B + 1], x - 1, y - 1), u),
+			v
+		);
+	}
+
+	// Fractal sum: each octave doubles frequency and halves amplitude, giving billowy edges.
+	function fbm(x: number, y: number) {
+		let sum = 0;
+		let amp = 1;
+		let norm = 0;
+		for (let o = 0; o < OCTAVES; o++) {
+			sum += perlin(x, y) * amp;
+			norm += amp;
+			x *= 2;
+			y *= 2;
+			amp *= 0.5;
+		}
+		return sum / norm;
+	}
+
+	for (const el of document.querySelectorAll<HTMLPreElement>('.noise-field .clouds')) {
+		let cols = 0;
+		let rows = 0;
+		let aspect = 0.6;
+
+		// Measure one glyph so the grid fits the box exactly at any font size.
+		function measure() {
+			const probe = document.createElement('span');
+			probe.textContent = '▒'.repeat(10);
+			el.replaceChildren(probe);
+			const { width, height } = probe.getBoundingClientRect();
+			el.replaceChildren();
+			const cw = width / 10;
+			// Overshoot by a cell so partial columns/rows at the edges are filled; overflow clips the rest.
+			cols = Math.max(1, Math.ceil(el.clientWidth / cw) + 1);
+			rows = Math.max(1, Math.ceil(el.clientHeight / height));
+			aspect = cw / height;
+		}
+
+		function draw(time: number) {
+			const seconds = time / 1000;
+
+			// Cumulus heights per column, in rows above the base. sqrt turns the noise humps into
+			// round domes, and the billow term adds smaller bumps along the top edge.
+			const base = rows - 1;
+			const maxHeight = rows * CUMULUS.height;
+			const heights = new Float32Array(cols);
+			for (let c = 0; c < cols; c++) {
+				const x = c * CUMULUS.scale * aspect + seconds * CUMULUS.speed;
+				const n = perlin(x, CUMULUS.offset) + 0.35 * perlin(x * 2.1, CUMULUS.offset + 9.1);
+				const t = Math.min(1, Math.max(0, (n - CUMULUS.threshold) / (CUMULUS.peak - CUMULUS.threshold)));
+				if (t <= 0) continue;
+				const billow = 1 + CUMULUS.billow * perlin(x * CUMULUS.billowFreq, CUMULUS.offset + 31.4);
+				heights[c] = Math.sqrt(t) * maxHeight * billow;
+			}
+
+			let out = '';
+			for (let r = 0; r < rows; r++) {
+				for (let c = 0; c < cols; c++) {
+					let glyph = 0;
+
+					// Distance below the dome's top edge: a soft rim of ░ and ▒, then a solid ▓ core.
+					const inside = heights[c] - (base - r);
+					if (inside > 0) glyph = inside < 0.6 ? 1 : inside < 1.4 || r === base ? 2 : 3;
+
+					for (const layer of LAYERS) {
+						const x = c * layer.scale * aspect * STRETCH + seconds * layer.speed;
+						const y = r * layer.scale + layer.offset;
+						const d = (fbm(x, y) - COVERAGE) * GAIN;
+						if (d > 0) glyph = Math.max(glyph, Math.min(layer.maxGlyph, 1 + Math.floor(d * (GLYPHS.length - 1))));
+					}
+					out += GLYPHS[glyph];
+				}
+				out += '\n';
+			}
+			el.textContent = out;
+		}
+
+		measure();
+		draw(0);
+		new ResizeObserver(() => {
+			measure();
+			draw(performance.now());
+		}).observe(el);
+
+		// Hold a still frame for reduced motion; otherwise animate only while on screen.
+		if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+			let frame = 0;
+			let last = 0;
+			const tick = (time: number) => {
+				frame = requestAnimationFrame(tick);
+				if (time - last < 1000 / FPS) return;
+				last = time;
+				draw(time);
+			};
+			new IntersectionObserver(([entry]) => {
+				cancelAnimationFrame(frame);
+				if (entry.isIntersecting) frame = requestAnimationFrame(tick);
+			}).observe(el);
+		}
+	}
+</script>
+
+<style>
+	/* Clouds take 25% of the gap; below them sit 3 blank rows and the 4-row terrain (1em = 1 row). */
+	.noise-field {
+		display: flex;
+		flex-direction: column;
+		width: 100%;
+		height: calc(25% + 7em);
+		line-height: 1;
+		color: var(--muted);
+		user-select: none;
+		pointer-events: none;
+	}
+
+	pre {
+		margin: 0;
+		overflow: hidden;
+		font: inherit;
+		/* No gaps between rows so the shades read as one surface. */
+		line-height: 1;
+		white-space: pre;
+	}
+
+	.clouds {
+		color: var(--sky);
+		flex: 1;
+		min-height: 0;
+		/* Soften the top and bottom edges into the surrounding space. */
+		/* mask-image: linear-gradient(transparent, #000 15%, #000 85%, transparent); */
+	}
+
+	.terrain {
+		color: var(--terrain);
+		flex: none;
+		height: 4em;
+		margin-top: 3em;
+	}
+</style>

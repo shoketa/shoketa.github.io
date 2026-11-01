@@ -1,0 +1,89 @@
+---
+// Plain inline script instead of a framework island: a few hundred bytes, no hydration.
+---
+
+<button class="theme-toggle" type="button" aria-label="Switch to dark theme">
+	<svg class="sun" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+		<circle cx="12" cy="12" r="4"></circle>
+		<path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path>
+	</svg>
+	<svg class="moon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+		<path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5a8.5 8.5 0 1 0 11 11Z"></path>
+	</svg>
+</button>
+
+<script is:inline>
+	(() => {
+		const button = document.currentScript.previousElementSibling;
+		const root = document.documentElement;
+		const isDark = () =>
+			root.dataset.theme
+				? root.dataset.theme === 'dark'
+				: matchMedia('(prefers-color-scheme: dark)').matches;
+		const sync = () =>
+			button.setAttribute('aria-label', `Switch to ${isDark() ? 'light' : 'dark'} theme`);
+
+		sync();
+		button.addEventListener('click', () => {
+			root.dataset.theme = isDark() ? 'light' : 'dark';
+			try {
+				localStorage.setItem('theme', root.dataset.theme);
+			} catch {}
+			sync();
+		});
+	})();
+</script>
+
+<style>
+	.theme-toggle {
+		display: inline-grid;
+		place-items: center;
+		width: 2.5rem;
+		height: 2.5rem;
+		padding: 0;
+		border: 1px solid var(--border);
+		border-radius: 0.375rem;
+		background: none;
+		color: var(--fg);
+		cursor: pointer;
+	}
+
+	.theme-toggle:hover {
+		border-color: var(--accent-text);
+		color: var(--accent-text);
+	}
+
+	svg {
+		grid-area: 1 / 1;
+		width: 1.25rem;
+		height: 1.25rem;
+		fill: none;
+		stroke: currentColor;
+		stroke-width: 1.75;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+	}
+
+	/* Show the icon of the theme you'd switch to. */
+	.sun {
+		display: none;
+	}
+
+	:global(:root[data-theme='dark']) .sun {
+		display: block;
+	}
+
+	:global(:root[data-theme='dark']) .moon {
+		display: none;
+	}
+
+	@media (prefers-color-scheme: dark) {
+		:global(:root:not([data-theme='light'])) .sun {
+			display: block;
+		}
+
+		:global(:root:not([data-theme='light'])) .moon {
+			display: none;
+		}
+	}
+</style>

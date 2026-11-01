@@ -1,0 +1,90 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+	const projects = await getCollection('projects');
+	return projects.map((project) => ({ params: { slug: project.id }, props: { project } }));
+}
+
+const { project } = Astro.props;
+const { title, year, summary, tags, video, poster } = project.data;
+const { Content } = await render(project);
+---
+
+<BaseLayout title={`${title}: breakdown`} description={summary}>
+	<article>
+		<p class="small"><a href="/breakdowns/">:: breakdowns</a> / {year}</p>
+		<h1>{title}</h1>
+		<p class="summary">{summary}</p>
+		{tags.length > 0 && <p class="small">{tags.join(' ░ ')}</p>}
+		{
+			video ? (
+				<video class="lead" src={video} poster={poster} muted loop playsinline preload="metadata" data-autoplay />
+			) : (
+				poster && <img class="lead" src={poster} alt="" />
+			)
+		}
+		<div class="prose">
+			<Content />
+		</div>
+	</article>
+</BaseLayout>
+
+<style>
+	article {
+		padding-top: 3rem;
+	}
+
+	h1 {
+		margin: 0.5rem 0;
+		font-size: clamp(1.75rem, 4vw, 2.75rem);
+		letter-spacing: -0.03em;
+	}
+
+	.summary {
+		max-width: 60ch;
+		color: var(--muted);
+	}
+
+	.lead {
+		width: 100%;
+		aspect-ratio: 16 / 9;
+		object-fit: cover;
+		margin: 2rem 0;
+		background: var(--surface);
+	}
+
+	.prose :global(h2) {
+		margin: 3rem 0 0.75rem;
+		font-size: 1rem;
+	}
+
+	.prose :global(img),
+	.prose :global(video) {
+		margin: 1.5rem 0;
+	}
+
+	/* Light/dark variants of the same graph: show the one matching the site theme. */
+	.prose :global(.theme-dark) {
+		display: none;
+	}
+
+	:global(:root[data-theme='dark']) .prose :global(.theme-light) {
+		display: none;
+	}
+
+	:global(:root[data-theme='dark']) .prose :global(.theme-dark) {
+		display: block;
+	}
+
+	@media (prefers-color-scheme: dark) {
+		:global(:root:not([data-theme='light'])) .prose :global(.theme-light) {
+			display: none;
+		}
+
+		:global(:root:not([data-theme='light'])) .prose :global(.theme-dark) {
+			display: block;
+		}
+	}
+</style>
